@@ -2,6 +2,11 @@
   publish = "."
   command = "echo 'No build step needed'"
 
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "script-src 'self' 'unsafe-eval'; object-src 'none';"
+
 [[redirects]]
   from = "/api/*"
   to = "https://tbs-production-9ec7.up.railway.app/api/:splat"

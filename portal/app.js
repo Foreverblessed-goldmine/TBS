@@ -98,17 +98,20 @@ const LOCATION = {
 
 // ——— dashboard ———
 if (location.pathname.endsWith("/dashboard.html")) {
-  const who = document.getElementById("whoami");
-  const greetingEl = document.getElementById("greeting");
-  const datetimeEl = document.getElementById("datetime");
-  const locationEl = document.getElementById("location");
-  const wTempEl = document.getElementById("weatherTemp");
-  const wCondEl = document.getElementById("weatherCond");
-  const wWarnEl = document.getElementById("weatherWarn");
+  (function() {
+    // Prevent multiple initializations
+    if (window.dashboardInitialized) {
+      return;
+    }
+    window.dashboardInitialized = true;
 
-  // Prevent multiple initializations
-  if (window.dashboardInitialized) return;
-  window.dashboardInitialized = true;
+    const who = document.getElementById("whoami");
+    const greetingEl = document.getElementById("greeting");
+    const datetimeEl = document.getElementById("datetime");
+    const locationEl = document.getElementById("location");
+    const wTempEl = document.getElementById("weatherTemp");
+    const wCondEl = document.getElementById("weatherCond");
+    const wWarnEl = document.getElementById("weatherWarn");
 
   // Clear any existing intervals
   if (window.clockInterval) {
@@ -229,6 +232,7 @@ if (location.pathname.endsWith("/dashboard.html")) {
       wWarnEl.hidden = true;
     }
   })();
+  })(); // Close the IIFE
 }
 
 // Reset dashboard initialization when navigating away

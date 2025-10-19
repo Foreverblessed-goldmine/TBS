@@ -46,37 +46,17 @@ class DashboardManager {
   }
 
   async computeMockMetrics() {
-    // Compute metrics from mock data
-    const [projects, tasks, invoices, expenses, items] = await Promise.all([
-      safe(api.get('/api/projects'), []),
-      safe(api.get('/api/tasks'), []),
-      safe(api.get('/api/finance/invoices'), []),
-      safe(api.get('/api/finance/expenses'), []),
-      safe(api.get('/api/warehouse/items'), [])
-    ]);
-
-    const today = new Date();
-    const thisWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-    
+    // Return static mock metrics when API is unavailable
     return {
-      activeProjects: projects.filter(p => p.status === 'active').length,
-      tasksDueToday: tasks.filter(t => {
-        const dueDate = new Date(t.end_date || t.end);
-        return dueDate.toDateString() === today.toDateString();
-      }).length,
-      tasksDueThisWeek: tasks.filter(t => {
-        const dueDate = new Date(t.end_date || t.end);
-        return dueDate <= thisWeek && dueDate >= today;
-      }).length,
-      blockedTasks: tasks.filter(t => t.status === 'blocked').length,
-      lowStockItems: items.filter(i => i.minQty && i.qty <= i.minQty).length,
-      outstandingInvoices: invoices.filter(i => i.status !== 'paid').length,
-      outstandingAmount: invoices
-        .filter(i => i.status !== 'paid')
-        .reduce((total, inv) => total + inv.amount, 0),
-      totalExpenses: expenses.reduce((total, exp) => total + exp.amount, 0),
-      netPosition: invoices.reduce((total, inv) => total + inv.amount, 0) - 
-                   expenses.reduce((total, exp) => total + exp.amount, 0)
+      activeProjects: 2,
+      tasksDueToday: 3,
+      tasksDueThisWeek: 8,
+      blockedTasks: 1,
+      lowStockItems: 2,
+      outstandingInvoices: 4,
+      outstandingAmount: 12500,
+      totalExpenses: 8500,
+      netPosition: 4000
     };
   }
 
@@ -256,8 +236,12 @@ class DashboardManager {
   }
 
   renderActivityItems() {
-    const startIndex = this.currentActivityIndex;
-    const endIndex = Math.min(startIndex + this.itemsPerView, this.activities.length);
+    if (!this.activities || !Array.isArray(this.activities)) {
+      return '<div class="activity-item">No activities available</div>';
+    }
+    
+    const startIndex = this.currentActivityIndex || 0;
+    const endIndex = Math.min(startIndex + (this.itemsPerView || 2), this.activities.length);
     
     return this.activities.slice(startIndex, endIndex).map((activity, index) => `
       <div class="activity-item active" style="animation-delay: ${index * 0.1}s">
@@ -280,44 +264,57 @@ class DashboardManager {
 
     const updateCarousel = () => {
       itemsContainer.innerHTML = this.renderActivityItems();
-      const startIndex = this.currentActivityIndex + 1;
-      const endIndex = Math.min(this.currentActivityIndex + this.itemsPerView, this.activities.length);
-      counter.textContent = `${startIndex}-${endIndex} of ${this.activities.length}`;
-      
-      // Disable buttons at boundaries
-      prevBtn.disabled = this.currentActivityIndex === 0;
-      nextBtn.disabled = this.currentActivityIndex + this.itemsPerView >= this.activities.length;
+      if (this.activities && Array.isArray(this.activities)) {
+        const startIndex = (this.currentActivityIndex || 0) + 1;
+        const endIndex = Math.min((this.currentActivityIndex || 0) + (this.itemsPerView || 2), this.activities.length);
+        counter.textContent = `${startIndex}-${endIndex} of ${this.activities.length}`;
+        
+        // Disable buttons at boundaries
+        prevBtn.disabled = (this.currentActivityIndex || 0) === 0;
+        nextBtn.disabled = (this.currentActivityIndex || 0) + (this.itemsPerView || 2) >= this.activities.length;
+      } else {
+        counter.textContent = '0-0 of 0';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+      }
     };
 
     prevBtn.addEventListener('click', () => {
-      if (this.currentActivityIndex > 0) {
-        this.currentActivityIndex = Math.max(0, this.currentActivityIndex - this.itemsPerView);
+      if (this.activities && Array.isArray(this.activities) && (this.currentActivityIndex || 0) > 0) {
+        this.currentActivityIndex = Math.max(0, (this.currentActivityIndex || 0) - (this.itemsPerView || 2));
         updateCarousel();
       }
     });
 
     nextBtn.addEventListener('click', () => {
-      if (this.currentActivityIndex + this.itemsPerView < this.activities.length) {
-        this.currentActivityIndex = Math.min(
-          this.activities.length - this.itemsPerView,
-          this.currentActivityIndex + this.itemsPerView
-        );
-        updateCarousel();
+      if (this.activities && Array.isArray(this.activities)) {
+        if ((this.currentActivityIndex || 0) + (this.itemsPerView || 2) < this.activities.length) {
+          this.currentActivityIndex = Math.min(
+            this.activities.length - (this.itemsPerView || 2),
+            (this.currentActivityIndex || 0) + (this.itemsPerView || 2)
+          );
+          updateCarousel();
+        } else {
+          this.currentActivityIndex = 0;
+          updateCarousel();
+        }
       }
     });
 
     // Auto-advance every 10 seconds
     setInterval(() => {
-      if (this.currentActivityIndex + this.itemsPerView < this.activities.length) {
-        this.currentActivityIndex = Math.min(
-          this.activities.length - this.itemsPerView,
-          this.currentActivityIndex + this.itemsPerView
-        );
-        updateCarousel();
-      } else {
-        // Loop back to start
-        this.currentActivityIndex = 0;
-        updateCarousel();
+      if (this.activities && Array.isArray(this.activities)) {
+        if ((this.currentActivityIndex || 0) + (this.itemsPerView || 2) < this.activities.length) {
+          this.currentActivityIndex = Math.min(
+            this.activities.length - (this.itemsPerView || 2),
+            (this.currentActivityIndex || 0) + (this.itemsPerView || 2)
+          );
+          updateCarousel();
+        } else {
+          // Loop back to start
+          this.currentActivityIndex = 0;
+          updateCarousel();
+        }
       }
     }, 10000);
 

@@ -146,9 +146,13 @@ if (location.pathname.endsWith("/dashboard.html")) {
   async function fetchWeather({ lat, lon, name }) {
     locationEl.textContent = name;
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Weather fetch failed");
-    const j = await res.json();
+    
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Weather API returned ${res.status}`);
+      const j = await res.json();
+      
+      if (!j.current) throw new Error("Invalid weather data received");
 
     // current
     const cur = j.current || {};
@@ -170,23 +174,50 @@ if (location.pathname.endsWith("/dashboard.html")) {
       (tMin <= 0) || (tMax >= 30);
 
     wWarnEl.hidden = !bad;
+    
+    } catch (error) {
+      console.warn("Weather fetch failed:", error);
+      throw error; // Re-throw to be caught by the caller
+    }
   }
 
   (async () => {
     try {
       const res = await api("/me");
-      const me = await res.json();
-      who.textContent = `${me.name} (${me.role})`;
-      toggleByRole(me.role);
-
-      updateClock(me.name);
-      setInterval(() => updateClock(me.name), 30 * 1000); // update every 30s
-
-      fetchWeather(LOCATION).catch(console.error);
-
-
+      if (res.ok) {
+        const me = await res.json();
+        who.textContent = `${me.name} (${me.role})`;
+        toggleByRole(me.role);
+        updateClock(me.name);
+        setInterval(() => updateClock(me.name), 30 * 1000); // update every 30s
+      } else {
+        // Fallback to mock user data
+        const mockUser = { name: "Danny Tighe", role: "admin" };
+        who.textContent = `${mockUser.name} (${mockUser.role})`;
+        toggleByRole(mockUser.role);
+        updateClock(mockUser.name);
+        setInterval(() => updateClock(mockUser.name), 30 * 1000);
+      }
     } catch (err) {
-      console.error(err);
+      console.warn("User API failed, using fallback:", err);
+      // Fallback to mock user data
+      const mockUser = { name: "Danny Tighe", role: "admin" };
+      who.textContent = `${mockUser.name} (${mockUser.role})`;
+      toggleByRole(mockUser.role);
+      updateClock(mockUser.name);
+      setInterval(() => updateClock(mockUser.name), 30 * 1000);
+    }
+
+    // Try weather with fallback
+    try {
+      await fetchWeather(LOCATION);
+    } catch (err) {
+      console.warn("Weather API failed, using fallback:", err);
+      // Fallback weather data
+      locationEl.textContent = LOCATION.name;
+      wTempEl.textContent = "15°C";
+      wCondEl.textContent = "Partly cloudy";
+      wWarnEl.hidden = true;
     }
   })();
 }

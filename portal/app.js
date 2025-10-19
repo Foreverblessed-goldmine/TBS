@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8080/api"; // Backend server URL
+const API_BASE = "/api"; // Backend server URL (proxied through Netlify)
 
 // ——— helpers ———
 const saveAccess = (jwt) => localStorage.setItem("tbs_at", jwt);

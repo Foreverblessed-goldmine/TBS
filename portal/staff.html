@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TBS – Staff</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="portal">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">TBS Portal</div>
+      <nav class="nav">
+        <a href="/portal/dashboard.html" data-nav="dashboard">TBS Dashboard</a>
+        <a href="/portal/calendar.html" data-nav="calendar">TBS Calendar</a>
+        <a href="/portal/staff.html" data-nav="staff">TBS Staff</a>
+        <a href="/portal/contractors.html" data-nav="contractors">TBS Contractors</a>
+        <a href="/portal/projects.html" data-nav="projects">TBS Projects</a>
+        <a href="/portal/warehouse.html" data-nav="warehouse">TBS Warehouse</a>
+        <a href="/portal/finance.html" data-nav="finance">TBS Finance</a>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <header class="dash-header">
+        <div class="header-logo">
+          <img src="../assets/TBSLogo.png" alt="TBS Logo">
+          <h1>TBS Staff</h1>
+        </div>
+      </header>
+      <div class="burger-menu" id="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <main id="dash" class="dash-grid">
+        <!-- Staff Management Header -->
+        <section class="panel staff-header">
+          <h3>Staff Management</h3>
+          <p>Manage team members, schedules, and assignments</p>
+        </section>
+
+        <!-- Staff Profile Cards -->
+        <section class="panel staff-profiles">
+          <div class="staff-grid">
+            <!-- Danny Tighe - Managing Director / Admin -->
+            <div class="staff-card" data-user-id="1" data-role="admin">
+              <div class="staff-card-header">
+                <span class="role-badge admin">Admin</span>
+              </div>
+              <div class="staff-avatar">
+                <img src="../assets/staff/danny.jpg" alt="Danny Tighe" class="profile-img" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzUiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Ik0yMCA4MEM4MCA4MCA4MCA5MCA4MCA5MEgyMEM4MCA5MFoiIGZpbGw9IiM2NjYiLz4KPC9zdmc+'">
+              </div>
+              <div class="staff-info">
+                <h4 class="staff-name">Danny Tighe</h4>
+                <p class="staff-position">Managing Director</p>
+                <p class="staff-email">danny@tbs.local</p>
+              </div>
+              <div class="staff-actions">
+                <button class="action-btn primary" onclick="viewSchedule(1)">Schedule</button>
+                <button class="action-btn secondary" onclick="viewPayroll(1)">Payroll</button>
+                <button class="action-btn secondary" onclick="viewTasks(1)">Tasks</button>
+              </div>
+            </div>
+
+            <!-- Pat - Foreman -->
+            <div class="staff-card" data-user-id="2" data-role="foreman">
+              <div class="staff-card-header">
+                <span class="role-badge foreman">Foreman</span>
+              </div>
+              <div class="staff-avatar">
+                <img src="../assets/staff/pat.jpg" alt="Pat" class="profile-img" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzUiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Ik0yMCA4MEM4MCA4MCA4MCA5MCA4MCA5MEgyMEM4MCA5MFoiIGZpbGw9IiM2NjYiLz4KPC9zdmc+'">
+              </div>
+              <div class="staff-info">
+                <h4 class="staff-name">Pat</h4>
+                <p class="staff-position">Foreman</p>
+                <p class="staff-email">pat@tbs.local</p>
+              </div>
+              <div class="staff-actions">
+                <button class="action-btn primary" onclick="viewSchedule(2)">Schedule</button>
+                <button class="action-btn secondary" onclick="viewPayroll(2)">Payroll</button>
+                <button class="action-btn secondary" onclick="viewTasks(2)">Tasks</button>
+              </div>
+            </div>
+
+            <!-- Adam - Foreman -->
+            <div class="staff-card" data-user-id="3" data-role="foreman">
+              <div class="staff-card-header">
+                <span class="role-badge foreman">Foreman</span>
+              </div>
+              <div class="staff-avatar">
+                <img src="../assets/staff/adam.jpg" alt="Adam" class="profile-img" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzUiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Ik0yMCA4MEM4MCA4MCA4MCA5MCA4MCA5MEgyMEM4MCA5MFoiIGZpbGw9IiM2NjYiLz4KPC9zdmc+'">
+              </div>
+              <div class="staff-info">
+                <h4 class="staff-name">Adam</h4>
+                <p class="staff-position">Foreman</p>
+                <p class="staff-email">adam@tbs.local</p>
+              </div>
+              <div class="staff-actions">
+                <button class="action-btn primary" onclick="viewSchedule(3)">Schedule</button>
+                <button class="action-btn secondary" onclick="viewPayroll(3)">Payroll</button>
+                <button class="action-btn secondary" onclick="viewTasks(3)">Tasks</button>
+              </div>
+            </div>
+
+            <!-- Charlie - Labourer -->
+            <div class="staff-card" data-user-id="4" data-role="worker">
+              <div class="staff-card-header">
+                <span class="role-badge labourer">Labourer</span>
+              </div>
+              <div class="staff-avatar">
+                <img src="../assets/staff/charlie.jpg" alt="Charlie" class="profile-img" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzUiIHI9IjE1IiBmaWxsPSIjNjY2Ii8+CjxwYXRoIGQ9Ik0yMCA4MEM4MCA4MCA4MCA5MCA4MCA5MEgyMEM4MCA5MFoiIGZpbGw9IiM2NjYiLz4KPC9zdmc+'">
+              </div>
+              <div class="staff-info">
+                <h4 class="staff-name">Charlie</h4>
+                <p class="staff-position">Labourer</p>
+                <p class="staff-email">charlie@tbs.local</p>
+              </div>
+              <div class="staff-actions">
+                <button class="action-btn primary" onclick="viewSchedule(4)">Schedule</button>
+                <button class="action-btn secondary" onclick="viewPayroll(4)">Payroll</button>
+                <button class="action-btn secondary" onclick="viewTasks(4)">Tasks</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="panel quick-actions">
+          <h3>Quick Actions</h3>
+          <div class="action-grid">
+            <button class="quick-action-btn" onclick="addNewStaff()">
+              <span class="action-icon">👤</span>
+              <span>Add Staff Member</span>
+            </button>
+            <button class="quick-action-btn" onclick="viewAllSchedules()">
+              <span class="action-icon">📅</span>
+              <span>View All Schedules</span>
+            </button>
+            <button class="quick-action-btn" onclick="generatePayroll()">
+              <span class="action-icon">💰</span>
+              <span>Generate Payroll</span>
+            </button>
+            <button class="quick-action-btn" onclick="exportStaffData()">
+              <span class="action-icon">📊</span>
+              <span>Export Data</span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Bottom Staff Management Panel -->
+  <div class="bottom-staff-panel">
+    <div class="staff-management-controls">
+      <button class="staff-management-btn" onclick="toggleStaffDropdown()">
+        <span class="management-icon">👥</span>
+        <span class="management-text">Staff Management</span>
+        <span class="dropdown-arrow">▼</span>
+      </button>
+      
+      <div class="staff-dropdown" id="staffDropdown">
+        <div class="dropdown-header">
+          <h4>Manage Staff Members</h4>
+          <button class="close-dropdown" onclick="closeStaffDropdown()">&times;</button>
+        </div>
+        
+        <div class="dropdown-content">
+          <div class="staff-list" id="staffList">
+            <!-- Staff members will be populated here -->
+          </div>
+          
+          <div class="dropdown-actions">
+            <button class="dropdown-action-btn primary" onclick="addNewStaff()">
+              <span class="action-icon">➕</span>
+              Add New Staff
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Staff Modal -->
+  <div id="addStaffModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add New Staff Member</h3>
+        <button class="modal-close" onclick="closeAddStaffModal()">&times;</button>
+      </div>
+      <form id="addStaffForm" class="modal-body">
+        <div class="form-group">
+          <label for="staffName">Full Name</label>
+          <input type="text" id="staffName" name="name" required placeholder="Enter full name">
+        </div>
+        <div class="form-group">
+          <label for="staffEmail">Email Address</label>
+          <input type="email" id="staffEmail" name="email" required placeholder="Enter email address">
+        </div>
+        <div class="form-group">
+          <label for="staffPhone">Phone Number</label>
+          <input type="tel" id="staffPhone" name="phone" placeholder="Enter phone number">
+        </div>
+        <div class="form-group">
+          <label for="staffRole">Role</label>
+          <select id="staffRole" name="role" required>
+            <option value="">Select a role</option>
+            <option value="admin">Admin</option>
+            <option value="foreman">Foreman</option>
+            <option value="worker">Worker</option>
+            <option value="contractor">Contractor</option>
+            <option value="labourer">Labourer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="staffPosition">Position Title</label>
+          <input type="text" id="staffPosition" name="position" required placeholder="Enter position title">
+        </div>
+        <div class="form-group">
+          <label for="staffPassword">Initial Password</label>
+          <input type="password" id="staffPassword" name="password" required placeholder="Enter initial password">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeAddStaffModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Staff Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Remove Staff Confirmation Modal -->
+  <div id="removeStaffModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Remove Staff Member</h3>
+        <button class="modal-close" onclick="closeRemoveStaffModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to remove <strong id="removeStaffName"></strong> from the team?</p>
+        <p class="warning-text">This action cannot be undone and will remove all associated data.</p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeRemoveStaffModal()">Cancel</button>
+          <button type="button" class="btn btn-danger" onclick="confirmRemoveStaff()">Remove Staff Member</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

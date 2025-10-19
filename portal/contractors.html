@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TBS – Contractors</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="portal">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">TBS Portal</div>
+      <nav class="nav">
+        <a href="/portal/dashboard.html" data-nav="dashboard">TBS Dashboard</a>
+        <a href="/portal/calendar.html" data-nav="calendar">TBS Calendar</a>
+        <a href="/portal/staff.html" data-nav="staff">TBS Staff</a>
+        <a href="/portal/contractors.html" data-nav="contractors">TBS Contractors</a>
+        <a href="/portal/projects.html" data-nav="projects">TBS Projects</a>
+        <a href="/portal/warehouse.html" data-nav="warehouse">TBS Warehouse</a>
+        <a href="/portal/finance.html" data-nav="finance">TBS Finance</a>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <header class="dash-header">
+        <div class="header-logo">
+          <img src="../assets/TBSLogo.png" alt="TBS Logo">
+          <h1>TBS Contractors</h1>
+        </div>
+      </header>
+      <div class="burger-menu" id="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <main id="dash" class="dash-grid">
+        <!-- Contractor Management Header -->
+        <section class="contractor-header">
+          <h2>Contractor Management</h2>
+          <p>Manage external contractors, their companies, and project assignments</p>
+        </section>
+
+        <!-- Contractors Grid -->
+        <section class="contractors-grid">
+          <!-- ABC Electrical Contractors -->
+          <div class="contractor-card" data-contractor-id="1">
+            <div class="contractor-card-header">
+              <span class="profession-badge electrical">Electrical</span>
+            </div>
+            <div class="contractor-avatar">
+              <img src="https://ui-avatars.com/api/?name=ABC+Electrical&background=FF6B35&color=fff&size=80" 
+                   alt="ABC Electrical" class="profile-img">
+            </div>
+            <div class="contractor-info">
+              <h4 class="contractor-company">ABC Electrical Contractors</h4>
+              <p class="contractor-profession">Electrical Services</p>
+              <p class="contractor-contact">Contact: 01493 123456</p>
+              <p class="contractor-email">info@abcelectrical.co.uk</p>
+            </div>
+            <div class="contractor-actions">
+              <button class="action-btn primary" onclick="viewContractorSchedule(1)">Schedule</button>
+              <button class="action-btn secondary" onclick="viewContractorProjects(1)">Projects</button>
+              <button class="action-btn secondary" onclick="viewContractorInvoices(1)">Invoices</button>
+            </div>
+          </div>
+
+          <!-- Premier Plumbing Services -->
+          <div class="contractor-card" data-contractor-id="2">
+            <div class="contractor-card-header">
+              <span class="profession-badge plumbing">Plumbing</span>
+            </div>
+            <div class="contractor-avatar">
+              <img src="https://ui-avatars.com/api/?name=Premier+Plumbing&background=2196F3&color=fff&size=80" 
+                   alt="Premier Plumbing" class="profile-img">
+            </div>
+            <div class="contractor-info">
+              <h4 class="contractor-company">Premier Plumbing Services</h4>
+              <p class="contractor-profession">Plumbing & Heating</p>
+              <p class="contractor-contact">Contact: 01493 789012</p>
+              <p class="contractor-email">contact@premierplumbing.co.uk</p>
+            </div>
+            <div class="contractor-actions">
+              <button class="action-btn primary" onclick="viewContractorSchedule(2)">Schedule</button>
+              <button class="action-btn secondary" onclick="viewContractorProjects(2)">Projects</button>
+              <button class="action-btn secondary" onclick="viewContractorInvoices(2)">Invoices</button>
+            </div>
+          </div>
+
+          <!-- Coastal Roofing Ltd -->
+          <div class="contractor-card" data-contractor-id="3">
+            <div class="contractor-card-header">
+              <span class="profession-badge roofing">Roofing</span>
+            </div>
+            <div class="contractor-avatar">
+              <img src="https://ui-avatars.com/api/?name=Coastal+Roofing&background=4CAF50&color=fff&size=80" 
+                   alt="Coastal Roofing" class="profile-img">
+            </div>
+            <div class="contractor-info">
+              <h4 class="contractor-company">Coastal Roofing Ltd</h4>
+              <p class="contractor-profession">Roofing & Guttering</p>
+              <p class="contractor-contact">Contact: 01493 456789</p>
+              <p class="contractor-email">info@coastalroofing.co.uk</p>
+            </div>
+            <div class="contractor-actions">
+              <button class="action-btn primary" onclick="viewContractorSchedule(3)">Schedule</button>
+              <button class="action-btn secondary" onclick="viewContractorProjects(3)">Projects</button>
+              <button class="action-btn secondary" onclick="viewContractorInvoices(3)">Invoices</button>
+            </div>
+          </div>
+
+          <!-- Great Yarmouth Flooring -->
+          <div class="contractor-card" data-contractor-id="4">
+            <div class="contractor-card-header">
+              <span class="profession-badge flooring">Flooring</span>
+            </div>
+            <div class="contractor-avatar">
+              <img src="https://ui-avatars.com/api/?name=GY+Flooring&background=9C27B0&color=fff&size=80" 
+                   alt="Great Yarmouth Flooring" class="profile-img">
+            </div>
+            <div class="contractor-info">
+              <h4 class="contractor-company">Great Yarmouth Flooring</h4>
+              <p class="contractor-profession">Flooring & Tiling</p>
+              <p class="contractor-contact">Contact: 01493 321654</p>
+              <p class="contractor-email">sales@gyflooring.co.uk</p>
+            </div>
+            <div class="contractor-actions">
+              <button class="action-btn primary" onclick="viewContractorSchedule(4)">Schedule</button>
+              <button class="action-btn secondary" onclick="viewContractorProjects(4)">Projects</button>
+              <button class="action-btn secondary" onclick="viewContractorInvoices(4)">Invoices</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+          <h3>Quick Actions</h3>
+          <div class="action-grid">
+            <button class="quick-action-btn" onclick="addNewContractor()">
+              <span class="action-icon">➕</span>
+              <span>Add Contractor</span>
+            </button>
+            <button class="quick-action-btn" onclick="viewAllSchedules()">
+              <span class="action-icon">📅</span>
+              <span>View Schedules</span>
+            </button>
+            <button class="quick-action-btn" onclick="generateInvoices()">
+              <span class="action-icon">💰</span>
+              <span>Generate Invoices</span>
+            </button>
+            <button class="quick-action-btn" onclick="exportContractorData()">
+              <span class="action-icon">📊</span>
+              <span>Export Data</span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TBS – Warehouse</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="portal">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">TBS Portal</div>
+      <nav class="nav">
+        <a href="/portal/dashboard.html" data-nav="dashboard">TBS Dashboard</a>
+        <a href="/portal/calendar.html" data-nav="calendar">TBS Calendar</a>
+        <a href="/portal/staff.html" data-nav="staff">TBS Staff</a>
+        <a href="/portal/contractors.html" data-nav="contractors">TBS Contractors</a>
+        <a href="/portal/projects.html" data-nav="projects">TBS Projects</a>
+        <a href="/portal/warehouse.html" data-nav="warehouse">TBS Warehouse</a>
+        <a href="/portal/finance.html" data-nav="finance">TBS Finance</a>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <header class="dash-header">
+        <div class="header-logo">
+          <img src="../assets/TBSLogo.png" alt="TBS Logo">
+          <h1>TBS Warehouse</h1>
+        </div>
+      </header>
+      <div class="burger-menu" id="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <main id="dash" class="dash-grid">
+        <!-- Warehouse Header -->
+        <section class="warehouse-header">
+          <h2>Surplus Materials Management</h2>
+          <p>Track and manage surplus materials from completed projects</p>
+        </section>
+
+        <!-- TBS YARD - Locked Card -->
+        <section class="warehouse-location locked">
+          <div class="location-card disabled">
+            <div class="location-header">
+              <div class="location-icon">
+                <span class="lock-icon">🔒</span>
+              </div>
+              <div class="location-status">
+                <span class="status-badge locked">Not Yet Purchased</span>
+              </div>
+            </div>
+            <div class="location-info">
+              <h3 class="location-name">TBS YARD</h3>
+              <p class="location-description">Main storage yard for surplus materials</p>
+              <div class="location-details">
+                <span class="location-capacity">Capacity: —</span>
+                <span class="location-items">Items: —</span>
+              </div>
+            </div>
+            <div class="location-actions">
+              <button class="action-btn disabled" disabled>Purchase Required</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Available Storage Locations -->
+        <section class="warehouse-locations">
+          <h3>Available Storage Locations</h3>
+          <div class="locations-grid">
+            <!-- Project Site Storage -->
+            <div class="location-card">
+              <div class="location-header">
+                <div class="location-icon">
+                  <span class="building-icon">🏗️</span>
+                </div>
+                <div class="location-status">
+                  <span class="status-badge active">Active</span>
+                </div>
+              </div>
+              <div class="location-info">
+                <h4 class="location-name">Project Site Storage</h4>
+                <p class="location-description">Temporary storage at active project sites</p>
+                <div class="location-details">
+                  <span class="location-capacity">Capacity: 85%</span>
+                  <span class="location-items">Items: 127</span>
+                </div>
+              </div>
+              <div class="location-actions">
+                <button class="action-btn primary" onclick="viewLocationInventory('site')">View Inventory</button>
+                <button class="action-btn secondary" onclick="manageLocation('site')">Manage</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Phantom Stock -->
+        <section class="phantom-stock">
+          <h3>Phantom Stock</h3>
+          <p class="phantom-description">Placeholder inventory items for planning and estimation</p>
+          <div class="stock-grid">
+            <!-- Bricks -->
+            <div class="stock-item">
+              <div class="stock-icon">
+                <img src="../assets/bricks.jpg" alt="Bricks" class="item-image">
+              </div>
+              <div class="stock-info">
+                <h4 class="stock-name">Bricks</h4>
+                <p class="stock-quantity">1,000 units</p>
+                <p class="stock-type">Building Materials</p>
+              </div>
+              <div class="stock-actions">
+                <button class="action-btn secondary" onclick="editStockItem('bricks')">Edit</button>
+              </div>
+            </div>
+
+            <!-- 2x4's -->
+            <div class="stock-item">
+              <div class="stock-icon">
+                <img src="../assets/2x4.jpg" alt="2x4 Timber" class="item-image">
+              </div>
+              <div class="stock-info">
+                <h4 class="stock-name">2x4's</h4>
+                <p class="stock-quantity">40 units</p>
+                <p class="stock-type">Lumber</p>
+              </div>
+              <div class="stock-actions">
+                <button class="action-btn secondary" onclick="editStockItem('2x4s')">Edit</button>
+              </div>
+            </div>
+
+            <!-- Plaster Boards -->
+            <div class="stock-item">
+              <div class="stock-icon">
+                <img src="../assets/plasterboards.jpeg" alt="Plaster Boards" class="item-image">
+              </div>
+              <div class="stock-info">
+                <h4 class="stock-name">Plaster Boards</h4>
+                <p class="stock-quantity">28 units</p>
+                <p class="stock-type">Drywall</p>
+              </div>
+              <div class="stock-actions">
+                <button class="action-btn secondary" onclick="editStockItem('plasterboards')">Edit</button>
+              </div>
+            </div>
+
+            <!-- Cement Bags -->
+            <div class="stock-item">
+              <div class="stock-icon">
+                <img src="../assets/cement.jpg" alt="Cement Bags" class="item-image">
+              </div>
+              <div class="stock-info">
+                <h4 class="stock-name">Cement Bags</h4>
+                <p class="stock-quantity">15 bags</p>
+                <p class="stock-type">Concrete</p>
+              </div>
+              <div class="stock-actions">
+                <button class="action-btn secondary" onclick="editStockItem('cement')">Edit</button>
+              </div>
+            </div>
+
+            <!-- Scrap Copper -->
+            <div class="stock-item">
+              <div class="stock-icon">
+                <span class="item-icon">🔶</span>
+              </div>
+              <div class="stock-info">
+                <h4 class="stock-name">Scrap Copper</h4>
+                <p class="stock-quantity">250 kg</p>
+                <p class="stock-type">Recyclable Metal</p>
+              </div>
+              <div class="stock-actions">
+                <button class="action-btn secondary" onclick="editStockItem('scrapcopper')">Edit</button>
+              </div>
+            </div>
+
+            <!-- Laminate Flooring -->
+            <div class="stock-item">
+              <div class="stock-icon">
+                <span class="item-icon">🏠</span>
+              </div>
+              <div class="stock-info">
+                <h4 class="stock-name">Laminate Flooring</h4>
+                <p class="stock-quantity">45 rolls</p>
+                <p class="stock-type">Flooring</p>
+              </div>
+              <div class="stock-actions">
+                <button class="action-btn secondary" onclick="editStockItem('laminate')">Edit</button>
+              </div>
+            </div>
+
+            <!-- Bags of Drywall -->
+            <div class="stock-item">
+              <div class="stock-icon">
+                <span class="item-icon">📦</span>
+              </div>
+              <div class="stock-info">
+                <h4 class="stock-name">Bags of Drywall</h4>
+                <p class="stock-quantity">32 bags</p>
+                <p class="stock-type">Drywall Compound</p>
+              </div>
+              <div class="stock-actions">
+                <button class="action-btn secondary" onclick="editStockItem('drywallbags')">Edit</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+          <h3>Quick Actions</h3>
+          <div class="action-grid">
+            <button class="quick-action-btn" onclick="addNewItem()">
+              <span class="action-icon">📦</span>
+              <span>Add Item</span>
+            </button>
+            <button class="quick-action-btn" onclick="transferItems()">
+              <span class="action-icon">🔄</span>
+              <span>Transfer Items</span>
+            </button>
+            <button class="quick-action-btn" onclick="generateReport()">
+              <span class="action-icon">📊</span>
+              <span>Generate Report</span>
+            </button>
+            <button class="quick-action-btn" onclick="exportInventory()">
+              <span class="action-icon">💾</span>
+              <span>Export Inventory</span>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

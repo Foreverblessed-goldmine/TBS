@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TBS – Projects</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="portal">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">TBS Portal</div>
+      <nav class="nav">
+        <a href="/portal/dashboard.html" data-nav="dashboard">TBS Dashboard</a>
+        <a href="/portal/calendar.html" data-nav="calendar">TBS Calendar</a>
+        <a href="/portal/staff.html" data-nav="staff">TBS Staff</a>
+        <a href="/portal/contractors.html" data-nav="contractors">TBS Contractors</a>
+        <a href="/portal/projects.html" data-nav="projects">TBS Projects</a>
+        <a href="/portal/warehouse.html" data-nav="warehouse">TBS Warehouse</a>
+        <a href="/portal/finance.html" data-nav="finance">TBS Finance</a>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <header class="dash-header">
+        <div class="header-logo">
+          <img src="../assets/TBSLogo.png" alt="TBS Logo">
+          <h1>TBS Projects</h1>
+        </div>
+      </header>
+      <div class="burger-menu" id="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <main id="dash" class="dash-grid">
+        <!-- Projects Header -->
+        <section class="projects-header">
+          <h2>Active Projects</h2>
+          <p>Current construction projects and their status</p>
+        </section>
+
+        <!-- Projects Grid -->
+        <section class="projects-grid">
+          <!-- 82 Walpole Road Project -->
+          <div class="project-card" data-project-id="1">
+            <div class="project-image">
+              <img src="../assets/82walpoleroad.png" alt="82 Walpole Road" class="project-img">
+              <div class="project-status">
+                <span class="status-badge active">Active</span>
+              </div>
+            </div>
+            <div class="project-info">
+              <h3 class="project-title">82 Walpole Road</h3>
+              <p class="project-address">82 Walpole Road, Great Yarmouth</p>
+              <p class="project-client">Client: Private Residential</p>
+              <div class="project-details">
+                <span class="project-stage">Foundation Phase</span>
+                <span class="project-progress">Progress: 25%</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="action-btn primary" onclick="viewProjectDetails(1)">View Details</button>
+              <button class="action-btn secondary" onclick="viewProjectSchedule(1)">Schedule</button>
+              <button class="action-btn secondary" onclick="viewProjectPhotos(1)">Photos</button>
+            </div>
+          </div>
+
+          <!-- Crown Road Project -->
+          <div class="project-card" data-project-id="2">
+            <div class="project-image">
+              <img src="../assets/crownroad.png" alt="Crown Road" class="project-img">
+              <div class="project-status">
+                <span class="status-badge active">Active</span>
+              </div>
+            </div>
+            <div class="project-info">
+              <h3 class="project-title">Crown Road</h3>
+              <p class="project-address">Crown Road, Great Yarmouth</p>
+              <p class="project-client">Client: Commercial Development</p>
+              <div class="project-details">
+                <span class="project-stage">Finishing</span>
+                <span class="project-progress">Progress: 95%</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="action-btn primary" onclick="viewProjectDetails(2)">View Details</button>
+              <button class="action-btn secondary" onclick="viewProjectSchedule(2)">Schedule</button>
+              <button class="action-btn secondary" onclick="viewProjectPhotos(2)">Photos</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

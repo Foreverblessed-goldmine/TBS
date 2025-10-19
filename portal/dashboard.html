@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TBS – Dashboard</title>
+  <link rel="stylesheet" href="./styles.css?v=20241019-3" />
+</head>
+<body class="portal">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">TBS Portal</div>
+      <nav class="nav">
+        <a href="/portal/dashboard.html" data-nav="dashboard">TBS Dashboard</a>
+        <a href="/portal/calendar.html" data-nav="calendar">TBS Calendar</a>
+        <a href="/portal/staff.html" data-nav="staff">TBS Staff</a>
+        <a href="/portal/contractors.html" data-nav="contractors">TBS Contractors</a>
+        <a href="/portal/projects.html" data-nav="projects">TBS Projects</a>
+        <a href="/portal/warehouse.html" data-nav="warehouse">TBS Warehouse</a>
+        <a href="/portal/finance.html" data-nav="finance">TBS Finance</a>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <header class="dash-header">
+        <div class="header-logo">
+          <img src="../assets/TBSLogo.png" alt="TBS Logo">
+          <h1>TBS Dashboard</h1>
+        </div>
+      </header>
+      <div class="burger-menu" id="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <main id="dash" class="dash-grid">
+        <!-- Welcome & User Info -->
+        <section class="panel" id="welcome">
+          <h2 id="greeting">Welcome</h2>
+          <p id="whoami">Loading…</p>
+          <p id="datetime" class="datetime"></p>
+        </section>
+
+        <!-- Weather and Projects Container -->
+        <div class="weather-projects-container">
+          <!-- Weather Panel -->
+          <section class="panel weather-panel" id="weather">
+            <h3>Weather</h3>
+            <div class="weather-info">
+              <div class="weather-location" id="location">Loading location...</div>
+              <div class="weather-temp" id="weatherTemp">—°C</div>
+              <div class="weather-condition" id="weatherCond">—</div>
+              <div class="weather-warning" id="weatherWarn" hidden>
+                ⚠️ Adverse weather conditions today
+              </div>
+            </div>
+          </section>
+
+          <!-- Active Projects Panel -->
+          <section class="panel projects-panel" id="activeProjects">
+            <h3>Active Projects</h3>
+            <div class="dashboard-projects">
+              <div class="dashboard-project-item" onclick="location.href='/portal/projects.html'">
+                <div class="dashboard-project-image">
+                  <img src="../assets/82walpoleroad.png" alt="82 Walpole Road" class="dashboard-project-img">
+                  <span class="dashboard-status-badge active">Active</span>
+                </div>
+                <div class="dashboard-project-info">
+                  <h4 class="dashboard-project-title">82 Walpole Road</h4>
+                  <p class="dashboard-project-stage">Foundation Phase</p>
+                  <p class="dashboard-project-progress">Progress: 25%</p>
+                </div>
+              </div>
+              
+              <div class="dashboard-project-item" onclick="location.href='/portal/projects.html'">
+                <div class="dashboard-project-image">
+                  <img src="../assets/crownroad.png" alt="Crown Road" class="dashboard-project-img">
+                  <span class="dashboard-status-badge active">Active</span>
+                </div>
+                <div class="dashboard-project-info">
+                  <h4 class="dashboard-project-title">Crown Road</h4>
+                  <p class="dashboard-project-stage">Finishing</p>
+                  <p class="dashboard-project-progress">Progress: 95%</p>
+                </div>
+              </div>
+            </div>
+            <div class="dashboard-projects-footer">
+              <a href="/portal/projects.html" class="view-all-projects">View All Projects →</a>
+            </div>
+          </section>
+        </div>
+
+        <!-- People Working Today & Calendar Panel -->
+        <section class="panel" id="peopleCalendar">
+          <h3>People Working Today & Calendar</h3>
+          <div class="people-calendar-container">
+            <div class="people-working">
+              <h4>Working Today</h4>
+              <div class="working-staff">
+                <div class="staff-member">
+                  <div class="staff-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Danny+Tighe&background=4b7bec&color=fff&size=40" alt="Danny Tighe" class="profile-img">
+                  </div>
+                  <div class="staff-info">
+                    <span class="staff-name">Danny Tighe</span>
+                    <span class="staff-role">Managing Director</span>
+                  </div>
+                  <div class="staff-status">
+                    <span class="status-indicator active">●</span>
+                  </div>
+                </div>
+                
+                <div class="staff-member">
+                  <div class="staff-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Pat&background=28a745&color=fff&size=40" alt="Pat" class="profile-img">
+                  </div>
+                  <div class="staff-info">
+                    <span class="staff-name">Pat</span>
+                    <span class="staff-role">Foreman</span>
+                  </div>
+                  <div class="staff-status">
+                    <span class="status-indicator active">●</span>
+                  </div>
+                </div>
+                
+                <div class="staff-member">
+                  <div class="staff-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Adam&background=ffc107&color=000&size=40" alt="Adam" class="profile-img">
+                  </div>
+                  <div class="staff-info">
+                    <span class="staff-name">Adam</span>
+                    <span class="staff-role">Foreman</span>
+                  </div>
+                  <div class="staff-status">
+                    <span class="status-indicator active">●</span>
+                  </div>
+                </div>
+                
+                <div class="staff-member">
+                  <div class="staff-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Charlie&background=17a2b8&color=fff&size=40" alt="Charlie" class="profile-img">
+                  </div>
+                  <div class="staff-info">
+                    <span class="staff-name">Charlie</span>
+                    <span class="staff-role">Labourer</span>
+                  </div>
+                  <div class="staff-status">
+                    <span class="status-indicator active">●</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="calendar-quick">
+              <h4>Today's Schedule</h4>
+              <div class="schedule-items">
+                <div class="schedule-item">
+                  <div class="schedule-time">08:00</div>
+                  <div class="schedule-details">
+                    <span class="schedule-title">Site Setup - 82 Walpole Road</span>
+                    <span class="schedule-assignee">Pat, Charlie</span>
+                  </div>
+                </div>
+                
+                <div class="schedule-item">
+                  <div class="schedule-time">10:00</div>
+                  <div class="schedule-details">
+                    <span class="schedule-title">Foundation Work</span>
+                    <span class="schedule-assignee">Adam, Charlie</span>
+                  </div>
+                </div>
+                
+                <div class="schedule-item">
+                  <div class="schedule-time">14:00</div>
+                  <div class="schedule-details">
+                    <span class="schedule-title">Crown Road Finishing</span>
+                    <span class="schedule-assignee">Pat, Adam</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="calendar-actions">
+                <button class="action-btn primary" onclick="location.href='/portal/calendar.html'">View Full Calendar</button>
+                <button class="action-btn secondary" onclick="location.href='/portal/staff.html'">Manage Staff</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Material Overview Panel -->
+        <section class="panel" id="materialOverview">
+          <h3>Material Overview</h3>
+          <div class="dashboard-materials">
+            <div class="dashboard-material-item" onclick="location.href='/portal/warehouse.html'">
+              <div class="dashboard-material-image">
+                <img src="../assets/bricks.jpg" alt="Bricks" class="dashboard-material-img">
+              </div>
+              <div class="dashboard-material-info">
+                <h4 class="dashboard-material-name">Bricks</h4>
+                <p class="dashboard-material-quantity">1,000 units</p>
+              </div>
+            </div>
+
+            <div class="dashboard-material-item" onclick="location.href='/portal/warehouse.html'">
+              <div class="dashboard-material-image">
+                <img src="../assets/2x4.jpg" alt="2x4 Timber" class="dashboard-material-img">
+              </div>
+              <div class="dashboard-material-info">
+                <h4 class="dashboard-material-name">2x4's</h4>
+                <p class="dashboard-material-quantity">40 units</p>
+              </div>
+            </div>
+
+            <div class="dashboard-material-item" onclick="location.href='/portal/warehouse.html'">
+              <div class="dashboard-material-image">
+                <img src="../assets/plasterboards.jpeg" alt="Plaster Boards" class="dashboard-material-img">
+              </div>
+              <div class="dashboard-material-info">
+                <h4 class="dashboard-material-name">Plaster Boards</h4>
+                <p class="dashboard-material-quantity">28 units</p>
+              </div>
+            </div>
+
+            <div class="dashboard-material-item" onclick="location.href='/portal/warehouse.html'">
+              <div class="dashboard-material-image">
+                <img src="../assets/cement.jpg" alt="Cement Bags" class="dashboard-material-img">
+              </div>
+              <div class="dashboard-material-info">
+                <h4 class="dashboard-material-name">Cement Bags</h4>
+                <p class="dashboard-material-quantity">15 bags</p>
+              </div>
+            </div>
+
+            <div class="dashboard-material-item" onclick="location.href='/portal/warehouse.html'">
+              <div class="dashboard-material-image">
+                <span class="dashboard-material-icon">🔶</span>
+              </div>
+              <div class="dashboard-material-info">
+                <h4 class="dashboard-material-name">Scrap Copper</h4>
+                <p class="dashboard-material-quantity">250 kg</p>
+              </div>
+            </div>
+
+            <div class="dashboard-material-item" onclick="location.href='/portal/warehouse.html'">
+              <div class="dashboard-material-image">
+                <span class="dashboard-material-icon">🏠</span>
+              </div>
+              <div class="dashboard-material-info">
+                <h4 class="dashboard-material-name">Laminate Flooring</h4>
+                <p class="dashboard-material-quantity">45 rolls</p>
+              </div>
+            </div>
+
+            <div class="dashboard-material-item" onclick="location.href='/portal/warehouse.html'">
+              <div class="dashboard-material-image">
+                <span class="dashboard-material-icon">📦</span>
+              </div>
+              <div class="dashboard-material-info">
+                <h4 class="dashboard-material-name">Bags of Drywall</h4>
+                <p class="dashboard-material-quantity">32 bags</p>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-materials-footer">
+            <a href="/portal/warehouse.html" class="view-all-materials">View All Materials →</a>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="./app.js" type="module"></script>
+</body>
+</html>
+

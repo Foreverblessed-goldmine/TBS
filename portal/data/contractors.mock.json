@@ -1,0 +1,64 @@
+{
+  "contractors": [
+    {
+      "id": "c-001",
+      "company": "Spark Electrical Ltd",
+      "trade": "ELECTRICAL",
+      "contactName": "Mike Johnson",
+      "phone": "07700 900123",
+      "email": "mike@sparkelectrical.co.uk",
+      "rating": 4.8,
+      "insuranceExpiry": "2025-12-31",
+      "notes": "Reliable for first and second fix work",
+      "status": "active"
+    },
+    {
+      "id": "c-002",
+      "company": "AquaFlow Plumbing",
+      "trade": "PLUMBING",
+      "contactName": "Sarah Williams",
+      "phone": "07700 900456",
+      "email": "sarah@aquaflow.co.uk",
+      "rating": 4.6,
+      "insuranceExpiry": "2025-11-15",
+      "notes": "Specializes in bathroom installations",
+      "status": "active"
+    },
+    {
+      "id": "c-003",
+      "company": "RoofMaster Solutions",
+      "trade": "ROOFING",
+      "contactName": "David Brown",
+      "phone": "07700 900789",
+      "email": "david@roofmaster.co.uk",
+      "rating": 4.9,
+      "insuranceExpiry": "2026-03-20",
+      "notes": "Expert in slate and tile work",
+      "status": "active"
+    },
+    {
+      "id": "c-004",
+      "company": "Concrete Works Ltd",
+      "trade": "CONCRETE",
+      "contactName": "Tom Wilson",
+      "phone": "07700 900321",
+      "email": "tom@concreteworks.co.uk",
+      "rating": 4.4,
+      "insuranceExpiry": "2025-10-30",
+      "notes": "Driveways and foundations",
+      "status": "active"
+    },
+    {
+      "id": "c-005",
+      "company": "Paint Perfect",
+      "trade": "PAINTING",
+      "contactName": "Lisa Davis",
+      "phone": "07700 900654",
+      "email": "lisa@paintperfect.co.uk",
+      "rating": 4.7,
+      "insuranceExpiry": "2025-09-15",
+      "notes": "Interior and exterior specialist",
+      "status": "active"
+    }
+  ]
+}

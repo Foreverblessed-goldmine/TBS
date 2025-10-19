@@ -1,0 +1,86 @@
+{
+  "items": [
+    {
+      "id": "item-001",
+      "name": "2x4 Timber",
+      "unit": "length",
+      "qty": 45,
+      "location": "Main Shed",
+      "minQty": 20,
+      "category": "timber",
+      "description": "Standard 2x4 construction timber"
+    },
+    {
+      "id": "item-002",
+      "name": "Cement Bags",
+      "unit": "bag",
+      "qty": 12,
+      "location": "Storage Yard",
+      "minQty": 5,
+      "category": "materials",
+      "description": "25kg cement bags"
+    },
+    {
+      "id": "item-003",
+      "name": "Electrical Cable",
+      "unit": "meter",
+      "qty": 150,
+      "location": "Tool Shed",
+      "minQty": 50,
+      "category": "electrical",
+      "description": "2.5mm twin and earth cable"
+    },
+    {
+      "id": "item-004",
+      "name": "Plasterboard",
+      "unit": "sheet",
+      "qty": 8,
+      "location": "Main Shed",
+      "minQty": 10,
+      "category": "materials",
+      "description": "12.5mm plasterboard sheets"
+    },
+    {
+      "id": "item-005",
+      "name": "Paint Brushes",
+      "unit": "piece",
+      "qty": 3,
+      "location": "Tool Shed",
+      "minQty": 5,
+      "category": "tools",
+      "description": "Various size paint brushes"
+    }
+  ],
+  "movements": [
+    {
+      "id": "mov-001",
+      "itemId": "item-001",
+      "type": "out",
+      "qty": 10,
+      "ref": "p-82walpole",
+      "date": "2025-10-15",
+      "note": "Kitchen renovation - framing",
+      "userId": "u-danny"
+    },
+    {
+      "id": "mov-002",
+      "itemId": "item-002",
+      "type": "in",
+      "qty": 20,
+      "ref": null,
+      "date": "2025-10-12",
+      "note": "Stock replenishment",
+      "userId": "u-danny"
+    },
+    {
+      "id": "mov-003",
+      "itemId": "item-003",
+      "type": "out",
+      "qty": 25,
+      "ref": "p-crown",
+      "date": "2025-10-10",
+      "note": "Bathroom electrical work",
+      "userId": "u-pat"
+    }
+  ]
+}

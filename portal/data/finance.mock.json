@@ -1,0 +1,69 @@
+{
+  "invoices": [
+    {
+      "id": "inv-001",
+      "number": "INV-2025-001",
+      "projectId": "p-82walpole",
+      "clientName": "John Smith",
+      "amount": 15000.00,
+      "status": "sent",
+      "dueDate": "2025-11-15",
+      "createdDate": "2025-10-01",
+      "description": "Kitchen renovation - first fix"
+    },
+    {
+      "id": "inv-002",
+      "number": "INV-2025-002",
+      "projectId": "p-crown",
+      "clientName": "Mary Johnson",
+      "amount": 8500.00,
+      "status": "paid",
+      "dueDate": "2025-10-30",
+      "createdDate": "2025-09-15",
+      "description": "Bathroom installation"
+    },
+    {
+      "id": "inv-003",
+      "number": "INV-2025-003",
+      "projectId": "p-hmo-conversion",
+      "clientName": "Property Investment Ltd",
+      "amount": 25000.00,
+      "status": "draft",
+      "dueDate": "2025-12-01",
+      "createdDate": "2025-10-10",
+      "description": "HMO conversion - complete"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "exp-001",
+      "date": "2025-10-15",
+      "vendor": "Builders Merchant",
+      "amount": 1250.00,
+      "category": "materials",
+      "projectId": "p-82walpole",
+      "description": "Timber and fixings",
+      "receipt": "receipt_001.pdf"
+    },
+    {
+      "id": "exp-002",
+      "date": "2025-10-12",
+      "vendor": "Spark Electrical Ltd",
+      "amount": 800.00,
+      "category": "subcontract",
+      "projectId": "p-crown",
+      "description": "Electrical work",
+      "receipt": "receipt_002.pdf"
+    },
+    {
+      "id": "exp-003",
+      "date": "2025-10-10",
+      "vendor": "Fuel Station",
+      "amount": 85.50,
+      "category": "vehicle",
+      "projectId": null,
+      "description": "Van fuel",
+      "receipt": "receipt_003.pdf"
+    }
+  ]
+}

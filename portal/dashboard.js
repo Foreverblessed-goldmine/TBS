@@ -262,6 +262,11 @@ class DashboardManager {
 
     if (!prevBtn || !nextBtn || !counter || !itemsContainer) return;
 
+    // Ensure activities are initialized
+    if (!this.activities || !Array.isArray(this.activities)) {
+      this.createActivityFeed();
+    }
+
     const updateCarousel = () => {
       itemsContainer.innerHTML = this.renderActivityItems();
       if (this.activities && Array.isArray(this.activities)) {
@@ -357,7 +362,31 @@ class DashboardManager {
   }
 }
 
-// Initialize dashboard when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  new DashboardManager().init();
+// Initialize dashboard when DOM is loaded or when page becomes visible
+let dashboardManager = null;
+
+function initDashboard() {
+  if (dashboardManager) {
+    // Clean up existing instance
+    dashboardManager = null;
+  }
+  dashboardManager = new DashboardManager();
+  dashboardManager.init();
+}
+
+// Initialize on DOM load
+document.addEventListener('DOMContentLoaded', initDashboard);
+
+// Re-initialize when page becomes visible (navigation back to dashboard)
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && location.pathname.endsWith('/dashboard.html')) {
+    initDashboard();
+  }
+});
+
+// Also re-initialize on focus (when user clicks back to tab)
+window.addEventListener('focus', () => {
+  if (location.pathname.endsWith('/dashboard.html')) {
+    initDashboard();
+  }
 });

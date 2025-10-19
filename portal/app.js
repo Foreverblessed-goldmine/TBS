@@ -106,6 +106,15 @@ if (location.pathname.endsWith("/dashboard.html")) {
   const wCondEl = document.getElementById("weatherCond");
   const wWarnEl = document.getElementById("weatherWarn");
 
+  // Prevent multiple initializations
+  if (window.dashboardInitialized) return;
+  window.dashboardInitialized = true;
+
+  // Clear any existing intervals
+  if (window.clockInterval) {
+    clearInterval(window.clockInterval);
+  }
+
   // role-gated UI
   const toggleByRole = (role) => {
     const show = (cls) => document.querySelectorAll(`.${cls}`).forEach(el => el.hidden = false);
@@ -189,14 +198,14 @@ if (location.pathname.endsWith("/dashboard.html")) {
         who.textContent = `${me.name} (${me.role})`;
         toggleByRole(me.role);
         updateClock(me.name);
-        setInterval(() => updateClock(me.name), 30 * 1000); // update every 30s
+        window.clockInterval = setInterval(() => updateClock(me.name), 30 * 1000); // update every 30s
       } else {
         // Fallback to mock user data
         const mockUser = { name: "Danny Tighe", role: "admin" };
         who.textContent = `${mockUser.name} (${mockUser.role})`;
         toggleByRole(mockUser.role);
         updateClock(mockUser.name);
-        setInterval(() => updateClock(mockUser.name), 30 * 1000);
+        window.clockInterval = setInterval(() => updateClock(mockUser.name), 30 * 1000);
       }
     } catch (err) {
       console.warn("User API failed, using fallback:", err);
@@ -205,7 +214,7 @@ if (location.pathname.endsWith("/dashboard.html")) {
       who.textContent = `${mockUser.name} (${mockUser.role})`;
       toggleByRole(mockUser.role);
       updateClock(mockUser.name);
-      setInterval(() => updateClock(mockUser.name), 30 * 1000);
+      window.clockInterval = setInterval(() => updateClock(mockUser.name), 30 * 1000);
     }
 
     // Try weather with fallback
@@ -221,6 +230,15 @@ if (location.pathname.endsWith("/dashboard.html")) {
     }
   })();
 }
+
+// Reset dashboard initialization when navigating away
+window.addEventListener('beforeunload', () => {
+  window.dashboardInitialized = false;
+  if (window.clockInterval) {
+    clearInterval(window.clockInterval);
+    window.clockInterval = null;
+  }
+});
 
 // ——— projects page ———
 if (location.pathname.endsWith("/projects.html")) {

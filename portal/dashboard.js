@@ -160,13 +160,6 @@ class DashboardManager {
         </div>
       </section>
 
-      <!-- Recent Activity Panel -->
-      <section class="panel activity-panel">
-        <h3>Recent Activity</h3>
-        <div class="activity-feed">
-          ${this.createActivityFeed()}
-        </div>
-      </section>
 
       <!-- Quick Actions Panel -->
       <section class="panel actions-panel">

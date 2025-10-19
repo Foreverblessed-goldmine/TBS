@@ -1,0 +1,191 @@
+{
+  "user": {
+    "id": "u-danny",
+    "role": "admin",
+    "name": "Danny Tighe"
+  },
+  "projects": [
+    {
+      "id": "p-82walpole",
+      "name": "82 Walpole Road"
+    },
+    {
+      "id": "p-crown",
+      "name": "Crown Road"
+    },
+    {
+      "id": "p-hmo-conversion",
+      "name": "HMO Conversion - London"
+    },
+    {
+      "id": "p-kitchen-reno",
+      "name": "Kitchen Renovation"
+    }
+  ],
+  "users": [
+    {
+      "id": "u-danny",
+      "name": "Danny Tighe",
+      "role": "admin"
+    },
+    {
+      "id": "u-pat",
+      "name": "Pat",
+      "role": "foreman"
+    },
+    {
+      "id": "u-adam",
+      "name": "Adam",
+      "role": "foreman"
+    },
+    {
+      "id": "u-charlie",
+      "name": "Charlie",
+      "role": "worker"
+    },
+    {
+      "id": "u-contractor-electric",
+      "name": "Electric Contractor",
+      "role": "contractor"
+    },
+    {
+      "id": "u-contractor-plumber",
+      "name": "Plumbing Contractor",
+      "role": "contractor"
+    }
+  ],
+  "events": [
+    {
+      "id": "t-001",
+      "projectId": "p-82walpole",
+      "title": "Strip-out & Prep",
+      "start": "2025-10-21T08:00:00",
+      "end": "2025-10-21T16:00:00",
+      "status": "active",
+      "assignees": ["u-pat", "u-adam"],
+      "notes": "Skip booked for 8:30am"
+    },
+    {
+      "id": "t-002",
+      "projectId": "p-crown",
+      "title": "First Fix Electrics",
+      "start": "2025-10-22T09:00:00",
+      "end": "2025-10-23T16:00:00",
+      "status": "planned",
+      "assignees": ["u-contractor-electric"],
+      "notes": "All sockets and switches to be installed"
+    },
+    {
+      "id": "t-003",
+      "projectId": "p-hmo-conversion",
+      "title": "Bathroom Installation",
+      "start": "2025-10-23T08:00:00",
+      "end": "2025-10-24T17:00:00",
+      "status": "planned",
+      "assignees": ["u-contractor-plumber", "u-charlie"],
+      "notes": "New bathroom suite installation"
+    },
+    {
+      "id": "t-004",
+      "projectId": "p-kitchen-reno",
+      "title": "Kitchen Demolition",
+      "start": "2025-10-20T09:00:00",
+      "end": "2025-10-20T15:00:00",
+      "status": "done",
+      "assignees": ["u-pat", "u-adam"],
+      "notes": "Old kitchen removed, ready for new installation"
+    },
+    {
+      "id": "t-005",
+      "projectId": "p-82walpole",
+      "title": "Structural Survey",
+      "start": "2025-10-25T10:00:00",
+      "end": "2025-10-25T14:00:00",
+      "status": "blocked",
+      "assignees": ["u-danny"],
+      "notes": "Waiting for surveyor availability"
+    },
+    {
+      "id": "t-006",
+      "projectId": "p-crown",
+      "title": "Plastering Work",
+      "start": "2025-10-24T08:00:00",
+      "end": "2025-10-25T16:00:00",
+      "status": "active",
+      "assignees": ["u-charlie"],
+      "notes": "Living room and bedroom plastering"
+    },
+    {
+      "id": "t-007",
+      "projectId": "p-hmo-conversion",
+      "title": "Fire Safety Installation",
+      "start": "2025-10-26T09:00:00",
+      "end": "2025-10-26T17:00:00",
+      "status": "planned",
+      "assignees": ["u-contractor-electric"],
+      "notes": "Smoke alarms and fire doors"
+    },
+    {
+      "id": "t-008",
+      "projectId": "p-kitchen-reno",
+      "title": "Kitchen Fitting",
+      "start": "2025-10-27T08:00:00",
+      "end": "2025-10-29T16:00:00",
+      "status": "planned",
+      "assignees": ["u-pat", "u-adam"],
+      "notes": "New kitchen installation and plumbing"
+    },
+    {
+      "id": "t-009",
+      "projectId": "p-82walpole",
+      "title": "Roof Repairs",
+      "start": "2025-10-28T08:00:00",
+      "end": "2025-10-30T16:00:00",
+      "status": "planned",
+      "assignees": ["u-contractor-electric", "u-charlie"],
+      "notes": "Roof tile replacement and guttering"
+    },
+    {
+      "id": "t-010",
+      "projectId": "p-crown",
+      "title": "Final Inspection",
+      "start": "2025-10-31T10:00:00",
+      "end": "2025-10-31T12:00:00",
+      "status": "planned",
+      "assignees": ["u-danny"],
+      "notes": "Building control final inspection"
+    }
+  ],
+  "bankHolidays": [
+    {
+      "id": "bh-1",
+      "title": "Christmas Day",
+      "start": "2025-12-25T00:00:00",
+      "end": "2025-12-25T23:59:59",
+      "allDay": true,
+      "display": "background",
+      "backgroundColor": "#f3f4f6",
+      "borderColor": "#d1d5db"
+    },
+    {
+      "id": "bh-2",
+      "title": "Boxing Day",
+      "start": "2025-12-26T00:00:00",
+      "end": "2025-12-26T23:59:59",
+      "allDay": true,
+      "display": "background",
+      "backgroundColor": "#f3f4f6",
+      "borderColor": "#d1d5db"
+    },
+    {
+      "id": "bh-3",
+      "title": "New Year's Day",
+      "start": "2026-01-01T00:00:00",
+      "end": "2026-01-01T23:59:59",
+      "allDay": true,
+      "display": "background",
+      "backgroundColor": "#f3f4f6",
+      "borderColor": "#d1d5db"
+    }
+  ]
+}

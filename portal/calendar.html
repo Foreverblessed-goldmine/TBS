@@ -5,44 +5,172 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>TBS – Calendar</title>
   <link rel="stylesheet" href="./styles.css" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 </head>
 <body class="portal">
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="brand">TBS Portal</div>
-      <nav class="nav">
-        <a href="/portal/dashboard.html" data-nav="dashboard">TBS Dashboard</a>
-        <a href="/portal/calendar.html" data-nav="calendar">TBS Calendar</a>
-        <a href="/portal/staff.html" data-nav="staff">TBS Staff</a>
-        <a href="/portal/contractors.html" data-nav="contractors">TBS Contractors</a>
-        <a href="/portal/projects.html" data-nav="projects">TBS Projects</a>
-        <a href="/portal/warehouse.html" data-nav="warehouse">TBS Warehouse</a>
-        <a href="/portal/finance.html" data-nav="finance">TBS Finance</a>
+  <!-- Portal Header -->
+  <header class="portal-header">
+    <div class="portal-header-content">
+      <div class="portal-logo">
+        <img src="./assets/TBS Logo.png" alt="TBS Logo" />
+        <h1>TBS Portal</h1>
+      </div>
+      <nav class="portal-nav">
+        <a href="/portal/dashboard.html" data-nav="dashboard">Dashboard</a>
+        <a href="/portal/staff.html" data-nav="staff">Staff</a>
+        <a href="/portal/contractors.html" data-nav="contractors">Contractors</a>
+        <a href="/portal/calendar.html" data-nav="calendar" class="active" aria-current="page">Calendar</a>
+        <a href="/portal/projects.html" data-nav="projects">Projects</a>
+        <a href="/portal/warehouse.html" data-nav="warehouse">Warehouse</a>
+        <a href="/portal/finance.html" data-nav="finance">Finance</a>
       </nav>
-    </aside>
+      <button class="burger-menu" id="burgerMenu" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
 
-    <div class="content">
-      <header class="dash-header">
-        <div class="header-logo">
-          <img src="../assets/TBSLogo.png" alt="TBS Logo">
-          <h1>TBS Calendar</h1>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <nav class="sidebar-nav">
+      <a href="/portal/dashboard.html" data-nav="dashboard">Dashboard</a>
+      <a href="/portal/staff.html" data-nav="staff">Staff</a>
+      <a href="/portal/contractors.html" data-nav="contractors">Contractors</a>
+      <a href="/portal/calendar.html" data-nav="calendar" class="active" aria-current="page">Calendar</a>
+      <a href="/portal/projects.html" data-nav="projects">Projects</a>
+      <a href="/portal/warehouse.html" data-nav="warehouse">Warehouse</a>
+      <a href="/portal/finance.html" data-nav="finance">Finance</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="portal-main">
+    <div class="calendar-container">
+      <!-- Calendar Toolbar -->
+      <div class="calendar-toolbar">
+        <div class="toolbar-section">
+          <h2>Project Calendar</h2>
+          <div class="view-controls">
+            <button class="view-btn" data-view="dayGridMonth">Month</button>
+            <button class="view-btn active" data-view="timeGridWeek">Week</button>
+            <button class="view-btn" data-view="timeGridDay">Day</button>
+          </div>
         </div>
-      </header>
-      <div class="burger-menu" id="burgerMenu">
-        <span></span>
-        <span></span>
-        <span></span>
+        
+        <div class="toolbar-section">
+          <div class="filters">
+            <select id="projectFilter" class="filter-select">
+              <option value="">All Projects</option>
+            </select>
+            <select id="assigneeFilter" class="filter-select">
+              <option value="">All Staff</option>
+            </select>
+            <select id="statusFilter" class="filter-select">
+              <option value="">All Status</option>
+              <option value="planned">Planned</option>
+              <option value="active">Active</option>
+              <option value="blocked">Blocked</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="toolbar-section">
+          <label class="toggle-switch">
+            <input type="checkbox" id="myScheduleToggle" />
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">My Schedule</span>
+          </label>
+          <button class="btn btn-secondary" id="exportBtn">Export iCal</button>
+          <button class="btn btn-primary only-admin" id="newEventBtn" style="display: none;">New Event</button>
+        </div>
       </div>
 
-      <main id="dash" class="dash-grid">
-        <section class="panel">
-          <h3>Project Calendar</h3>
-          <p>Coming soon - Calendar and scheduling features will be available here.</p>
-        </section>
-      </main>
+      <!-- Calendar -->
+      <div id="tbs-calendar"></div>
+    </div>
+  </main>
+
+  <!-- Event Modal -->
+  <div id="eventModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Create New Task</h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <form id="eventForm" class="modal-body">
+        <div class="form-group">
+          <label for="eventTitle">Task Title *</label>
+          <input type="text" id="eventTitle" name="title" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="eventProject">Project *</label>
+          <select id="eventProject" name="projectId" required>
+            <option value="">Select Project</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eventStartDate">Start Date *</label>
+            <input type="date" id="eventStartDate" name="startDate" required />
+          </div>
+          <div class="form-group">
+            <label for="eventStartTime">Start Time *</label>
+            <input type="time" id="eventStartTime" name="startTime" required />
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="eventEndDate">End Date *</label>
+            <input type="date" id="eventEndDate" name="endDate" required />
+          </div>
+          <div class="form-group">
+            <label for="eventEndTime">End Time *</label>
+            <input type="time" id="eventEndTime" name="endTime" required />
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="eventStatus">Status *</label>
+          <select id="eventStatus" name="status" required>
+            <option value="planned">Planned</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="eventAssignees">Assigned Staff</label>
+          <div id="assigneeCheckboxes" class="checkbox-group">
+            <!-- Populated by JavaScript -->
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="eventNotes">Notes</label>
+          <textarea id="eventNotes" name="notes" rows="3" placeholder="Additional notes..."></textarea>
+        </div>
+        
+        <div id="conflictWarning" class="conflict-warning" style="display: none;">
+          ⚠️ Some assigned staff have conflicting events
+        </div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="modalCancel">Cancel</button>
+        <button type="button" class="btn btn-danger only-admin" id="deleteBtn" style="display: none;">Delete</button>
+        <button type="submit" form="eventForm" class="btn btn-primary" id="saveBtn">Save</button>
+      </div>
     </div>
   </div>
 
   <script src="./app.js" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+  <script src="./calendar.js" type="module"></script>
 </body>
 </html>

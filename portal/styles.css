@@ -4262,7 +4262,7 @@ main {
 /* People and Contractors Container */
 .people-contractors-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 3fr;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -4507,7 +4507,24 @@ main {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .people-contractors-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: 2fr 3fr;
+    gap: 1rem;
+  }
+  
+  .people-panel .staff-name-compact,
+  .contractors-panel .contractor-name-compact {
+    font-size: 0.75rem;
+  }
+  
+  .people-panel .staff-role-compact,
+  .contractors-panel .contractor-role-compact {
+    font-size: 0.65rem;
+  }
+  
+  .people-panel .staff-avatar-compact img,
+  .contractors-panel .contractor-avatar-compact img {
+    width: 20px;
+    height: 20px;
   }
   
   .activity-controls {

@@ -8,6 +8,8 @@ import { ensureSchema } from "./db/bootstrap.js";
 import { auth } from "./auth/routes.js";
 import { projects } from "./projects/routes.js";
 import { staff } from "./staff/routes.js";
+import { users } from "./users/routes.js";
+import { tasks } from "./tasks/routes.js";
 import { bearer } from "./common/middleware.js";
 import { knex } from "./db/knex.js";
 
@@ -53,7 +55,13 @@ app.use("/api/projects", projects);
 // Staff
 app.use("/api/staff", staff);
 
-// TODO: tasks, assignments, photos (Phase 1b/2)
+// Users
+app.use("/api/users", users);
+
+// Tasks
+app.use("/api/tasks", tasks);
+
+// TODO: assignments, photos (Phase 1b/2)
 
 // Error handler
 app.use((err, _req, res, _next) => {

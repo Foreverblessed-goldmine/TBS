@@ -19,8 +19,18 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-app.use(helmet());
-app.use(cors({ origin: ["http://localhost:3000", "http://localhost:5173"], credentials: true }));
+app.use(helmet({
+  contentSecurityPolicy: false, // Let Netlify handle CSP
+  crossOriginEmbedderPolicy: false
+}));
+app.use(cors({ 
+  origin: [
+    "http://localhost:3000", 
+    "http://localhost:5173",
+    "https://lucent-biscotti-9e0a64.netlify.app"
+  ], 
+  credentials: true 
+}));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());

@@ -2790,3 +2790,24 @@ main {
   }
 }
 
+/* ===== CALENDAR ERROR STYLES ===== */
+
+.cal-error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+.fc .fc-toolbar-title { 
+  font-weight: 700; 
+}
+
+.fc .fc-event {
+  border-radius: 8px;
+  border: none;
+}
+

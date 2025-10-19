@@ -16,6 +16,11 @@ class DashboardManager {
     this.render();
     this.setupEventListeners();
     
+    // Initialize activity carousel after render
+    setTimeout(() => {
+      this.initActivityCarousel();
+    }, 100);
+    
     // Refresh data every 5 minutes
     setInterval(() => this.loadDashboardData(), 5 * 60 * 1000);
   }
@@ -238,17 +243,31 @@ class DashboardManager {
 
 
   createActivityFeed() {
-    // Mock activity feed
+    // Mock activity feed with 7 items
     const activities = [
       { type: 'task', message: 'Task "Kitchen Renovation" completed', time: '2 hours ago', user: 'Pat' },
       { type: 'invoice', message: 'Invoice INV-2025-001 sent to client', time: '4 hours ago', user: 'Danny' },
       { type: 'stock', message: 'Low stock alert: 2x4 Timber', time: '6 hours ago', user: 'System' },
       { type: 'project', message: 'New project "82 Walpole Road" started', time: '1 day ago', user: 'Danny' },
-      { type: 'photo', message: '5 photos uploaded to Crown Road project', time: '2 days ago', user: 'Adam' }
+      { type: 'photo', message: '5 photos uploaded to Crown Road project', time: '2 days ago', user: 'Adam' },
+      { type: 'staff', message: 'Charlie clocked in for the day', time: '2 days ago', user: 'System' },
+      { type: 'material', message: 'Cement delivery received', time: '2 days ago', user: 'Adam' }
     ];
 
-    return activities.map(activity => `
-      <div class="activity-item">
+    // Initialize carousel with first 2 items
+    this.activities = activities;
+    this.currentActivityIndex = 0;
+    this.itemsPerView = 2;
+
+    return this.renderActivityItems();
+  }
+
+  renderActivityItems() {
+    const startIndex = this.currentActivityIndex;
+    const endIndex = Math.min(startIndex + this.itemsPerView, this.activities.length);
+    
+    return this.activities.slice(startIndex, endIndex).map((activity, index) => `
+      <div class="activity-item active" style="animation-delay: ${index * 0.1}s">
         <div class="activity-icon">${this.getActivityIcon(activity.type)}</div>
         <div class="activity-content">
           <div class="activity-message">${activity.message}</div>
@@ -256,6 +275,61 @@ class DashboardManager {
         </div>
       </div>
     `).join('');
+  }
+
+  initActivityCarousel() {
+    const prevBtn = document.getElementById('activityPrev');
+    const nextBtn = document.getElementById('activityNext');
+    const counter = document.getElementById('activityCounter');
+    const itemsContainer = document.getElementById('activityItems');
+
+    if (!prevBtn || !nextBtn || !counter || !itemsContainer) return;
+
+    const updateCarousel = () => {
+      itemsContainer.innerHTML = this.renderActivityItems();
+      const startIndex = this.currentActivityIndex + 1;
+      const endIndex = Math.min(this.currentActivityIndex + this.itemsPerView, this.activities.length);
+      counter.textContent = `${startIndex}-${endIndex} of ${this.activities.length}`;
+      
+      // Disable buttons at boundaries
+      prevBtn.disabled = this.currentActivityIndex === 0;
+      nextBtn.disabled = this.currentActivityIndex + this.itemsPerView >= this.activities.length;
+    };
+
+    prevBtn.addEventListener('click', () => {
+      if (this.currentActivityIndex > 0) {
+        this.currentActivityIndex = Math.max(0, this.currentActivityIndex - this.itemsPerView);
+        updateCarousel();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (this.currentActivityIndex + this.itemsPerView < this.activities.length) {
+        this.currentActivityIndex = Math.min(
+          this.activities.length - this.itemsPerView,
+          this.currentActivityIndex + this.itemsPerView
+        );
+        updateCarousel();
+      }
+    });
+
+    // Auto-advance every 10 seconds
+    setInterval(() => {
+      if (this.currentActivityIndex + this.itemsPerView < this.activities.length) {
+        this.currentActivityIndex = Math.min(
+          this.activities.length - this.itemsPerView,
+          this.currentActivityIndex + this.itemsPerView
+        );
+        updateCarousel();
+      } else {
+        // Loop back to start
+        this.currentActivityIndex = 0;
+        updateCarousel();
+      }
+    }, 10000);
+
+    // Initial update
+    updateCarousel();
   }
 
   getActivityIcon(type) {

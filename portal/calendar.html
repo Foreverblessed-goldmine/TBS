@@ -44,44 +44,10 @@
 
       <main id="dash" class="dash-grid">
     <div class="calendar-container">
-      <!-- Calendar Toolbar -->
-      <div class="calendar-toolbar">
-        <div class="toolbar-section">
-          <h2>Project Calendar</h2>
-          <div class="view-controls">
-            <button class="view-btn" data-view="dayGridMonth">Month</button>
-            <button class="view-btn active" data-view="timeGridWeek">Week</button>
-            <button class="view-btn" data-view="timeGridDay">Day</button>
-          </div>
-        </div>
-        
-        <div class="toolbar-section">
-          <div class="filters">
-            <select id="projectFilter" class="filter-select">
-              <option value="">All Projects</option>
-            </select>
-            <select id="assigneeFilter" class="filter-select">
-              <option value="">All Staff</option>
-            </select>
-            <select id="statusFilter" class="filter-select">
-              <option value="">All Status</option>
-              <option value="planned">Planned</option>
-              <option value="active">Active</option>
-              <option value="blocked">Blocked</option>
-              <option value="done">Done</option>
-            </select>
-          </div>
-        </div>
-        
-        <div class="toolbar-section">
-          <label class="toggle-switch">
-            <input type="checkbox" id="myScheduleToggle" />
-            <span class="toggle-slider"></span>
-            <span class="toggle-label">My Schedule</span>
-          </label>
-          <button class="btn btn-secondary" id="exportBtn">Export iCal</button>
-          <button class="btn btn-primary only-admin" id="newEventBtn" style="display: none;">New Event</button>
-        </div>
+      <!-- Calendar Header -->
+      <div class="calendar-header">
+        <h2>Project Calendar</h2>
+        <button class="btn btn-primary only-admin" id="newEventBtn" style="display: none;">New Event</button>
       </div>
 
       <!-- Error Display -->

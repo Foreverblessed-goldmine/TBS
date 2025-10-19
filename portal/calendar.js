@@ -106,54 +106,8 @@ class TBSCalendar {
   }
 
   setupEventListeners() {
-    // View controls
-    document.querySelectorAll('.view-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const view = e.target.dataset.view;
-        this.calendar.changeView(view);
-        this.updateViewButtons(view);
-      });
-    });
-
-    // Filters
-    const projectFilter = document.getElementById('projectFilter');
-    const assigneeFilter = document.getElementById('assigneeFilter');
-    const statusFilter = document.getElementById('statusFilter');
-    const myScheduleToggle = document.getElementById('myScheduleToggle');
-
-    if (projectFilter) {
-      projectFilter.addEventListener('change', (e) => {
-        this.filters.project = e.target.value;
-        this.applyFilters();
-      });
-    }
-
-    if (assigneeFilter) {
-      assigneeFilter.addEventListener('change', (e) => {
-        this.filters.assignee = e.target.value;
-        this.applyFilters();
-      });
-    }
-
-    if (statusFilter) {
-      statusFilter.addEventListener('change', (e) => {
-        this.filters.status = e.target.value;
-        this.applyFilters();
-      });
-    }
-
-    if (myScheduleToggle) {
-      myScheduleToggle.addEventListener('change', (e) => {
-        this.filters.mySchedule = e.target.checked;
-        this.applyFilters();
-      });
-    }
-
-    // Export button
-    const exportBtn = document.getElementById('exportBtn');
-    if (exportBtn) {
-      exportBtn.addEventListener('click', () => this.exportICS());
-    }
+    // All controls have been removed - calendar now uses only week view with built-in navigation
+    // No additional event listeners needed
   }
 
   initializeCalendar() {
@@ -175,7 +129,7 @@ class TBSCalendar {
       headerToolbar: { 
         left: 'prev,next today', 
         center: 'title', 
-        right: 'dayGridMonth,timeGridWeek,timeGridDay' 
+        right: '' 
       },
 
       events: async (info, success, failure) => {
@@ -266,20 +220,6 @@ class TBSCalendar {
     }));
   }
 
-  applyFilters() {
-    if (this.calendar) {
-      this.calendar.refetchEvents();
-    }
-  }
-
-  updateViewButtons(activeView) {
-    document.querySelectorAll('.view-btn').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.dataset.view === activeView) {
-        btn.classList.add('active');
-      }
-    });
-  }
 
   async openCreateTaskModal(defaultDate = null) {
     const bodyNode = await this.createTaskFormNode(null, defaultDate);
@@ -585,32 +525,6 @@ class TBSCalendar {
     }
   }
 
-  exportICS() {
-    const events = this.calendar.getEvents();
-    const view = this.calendar.view;
-    const start = view.activeStart;
-    const end = view.activeEnd;
-    
-    // Filter events to current view
-    const visibleEvents = events.filter(event => {
-      const eventStart = new Date(event.start);
-      return eventStart >= start && eventStart <= end;
-    });
-    
-    // Convert to export format
-    const exportEvents = visibleEvents.map(event => ({
-      id: event.id,
-      title: event.title,
-      start: event.start.toISOString(),
-      end: event.end.toISOString(),
-      status: event.extendedProps.status,
-      project: event.extendedProps.project,
-      assignees: event.extendedProps.assignees,
-      notes: event.extendedProps.notes
-    }));
-    
-    exportToICS(exportEvents, 'tbs-calendar');
-  }
 
   showError(message) {
     const errorEl = document.getElementById('cal-error');

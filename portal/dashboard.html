@@ -42,6 +42,21 @@
           <p id="datetime" class="datetime"></p>
         </section>
 
+        <!-- Recent Activity Panel -->
+        <section class="panel activity-panel" id="recentActivity">
+          <h3>Recent Activity</h3>
+          <div class="activity-carousel">
+            <div class="activity-items" id="activityItems">
+              <!-- Activity items will be populated by JavaScript -->
+            </div>
+            <div class="activity-controls">
+              <button class="activity-prev" id="activityPrev">‹</button>
+              <span class="activity-counter" id="activityCounter">1-2 of 7</span>
+              <button class="activity-next" id="activityNext">›</button>
+            </div>
+          </div>
+        </section>
+
         <!-- Weather and Projects Container -->
         <div class="weather-projects-container">
           <!-- Weather Panel -->
@@ -91,102 +106,102 @@
           </section>
         </div>
 
-        <!-- People Working Today & Calendar Panel -->
-        <section class="panel" id="peopleCalendar">
-          <h3>People Working Today & Calendar</h3>
-          <div class="people-calendar-container">
-            <div class="people-working">
-              <h4>Working Today</h4>
-              <div class="working-staff">
-                <div class="staff-member">
-                  <div class="staff-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Danny+Tighe&background=4b7bec&color=fff&size=40" alt="Danny Tighe" class="profile-img">
-                  </div>
-                  <div class="staff-info">
-                    <span class="staff-name">Danny Tighe</span>
-                    <span class="staff-role">Managing Director</span>
-                  </div>
-                  <div class="staff-status">
-                    <span class="status-indicator active">●</span>
-                  </div>
+        <!-- People and Schedule Container -->
+        <div class="people-schedule-container">
+          <!-- People Working Today Panel -->
+          <section class="panel people-panel" id="peopleWorking">
+            <h3>People Working Today</h3>
+            <div class="working-staff">
+              <div class="staff-member">
+                <div class="staff-avatar">
+                  <img src="https://ui-avatars.com/api/?name=Danny+Tighe&background=4b7bec&color=fff&size=32" alt="Danny Tighe" class="profile-img">
                 </div>
-                
-                <div class="staff-member">
-                  <div class="staff-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Pat&background=28a745&color=fff&size=40" alt="Pat" class="profile-img">
-                  </div>
-                  <div class="staff-info">
-                    <span class="staff-name">Pat</span>
-                    <span class="staff-role">Foreman</span>
-                  </div>
-                  <div class="staff-status">
-                    <span class="status-indicator active">●</span>
-                  </div>
+                <div class="staff-info">
+                  <span class="staff-name">Danny Tighe</span>
+                  <span class="staff-role">Managing Director</span>
                 </div>
-                
-                <div class="staff-member">
-                  <div class="staff-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Adam&background=ffc107&color=000&size=40" alt="Adam" class="profile-img">
-                  </div>
-                  <div class="staff-info">
-                    <span class="staff-name">Adam</span>
-                    <span class="staff-role">Foreman</span>
-                  </div>
-                  <div class="staff-status">
-                    <span class="status-indicator active">●</span>
-                  </div>
-                </div>
-                
-                <div class="staff-member">
-                  <div class="staff-avatar">
-                    <img src="https://ui-avatars.com/api/?name=Charlie&background=17a2b8&color=fff&size=40" alt="Charlie" class="profile-img">
-                  </div>
-                  <div class="staff-info">
-                    <span class="staff-name">Charlie</span>
-                    <span class="staff-role">Labourer</span>
-                  </div>
-                  <div class="staff-status">
-                    <span class="status-indicator active">●</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="calendar-quick">
-              <h4>Today's Schedule</h4>
-              <div class="schedule-items">
-                <div class="schedule-item">
-                  <div class="schedule-time">08:00</div>
-                  <div class="schedule-details">
-                    <span class="schedule-title">Site Setup - 82 Walpole Road</span>
-                    <span class="schedule-assignee">Pat, Charlie</span>
-                  </div>
-                </div>
-                
-                <div class="schedule-item">
-                  <div class="schedule-time">10:00</div>
-                  <div class="schedule-details">
-                    <span class="schedule-title">Foundation Work</span>
-                    <span class="schedule-assignee">Adam, Charlie</span>
-                  </div>
-                </div>
-                
-                <div class="schedule-item">
-                  <div class="schedule-time">14:00</div>
-                  <div class="schedule-details">
-                    <span class="schedule-title">Crown Road Finishing</span>
-                    <span class="schedule-assignee">Pat, Adam</span>
-                  </div>
+                <div class="staff-status">
+                  <span class="status-indicator active">●</span>
                 </div>
               </div>
               
-              <div class="calendar-actions">
-                <button class="action-btn primary" onclick="location.href='/portal/calendar.html'">View Full Calendar</button>
-                <button class="action-btn secondary" onclick="location.href='/portal/staff.html'">Manage Staff</button>
+              <div class="staff-member">
+                <div class="staff-avatar">
+                  <img src="https://ui-avatars.com/api/?name=Pat&background=28a745&color=fff&size=32" alt="Pat" class="profile-img">
+                </div>
+                <div class="staff-info">
+                  <span class="staff-name">Pat</span>
+                  <span class="staff-role">Foreman</span>
+                </div>
+                <div class="staff-status">
+                  <span class="status-indicator active">●</span>
+                </div>
+              </div>
+              
+              <div class="staff-member">
+                <div class="staff-avatar">
+                  <img src="https://ui-avatars.com/api/?name=Adam&background=ffc107&color=000&size=32" alt="Adam" class="profile-img">
+                </div>
+                <div class="staff-info">
+                  <span class="staff-name">Adam</span>
+                  <span class="staff-role">Foreman</span>
+                </div>
+                <div class="staff-status">
+                  <span class="status-indicator active">●</span>
+                </div>
+              </div>
+              
+              <div class="staff-member">
+                <div class="staff-avatar">
+                  <img src="https://ui-avatars.com/api/?name=Charlie&background=17a2b8&color=fff&size=32" alt="Charlie" class="profile-img">
+                </div>
+                <div class="staff-info">
+                  <span class="staff-name">Charlie</span>
+                  <span class="staff-role">Labourer</span>
+                </div>
+                <div class="staff-status">
+                  <span class="status-indicator active">●</span>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+            <div class="panel-footer">
+              <a href="/portal/staff.html" class="view-all-link">Manage Staff →</a>
+            </div>
+          </section>
+
+          <!-- Today's Schedule Panel -->
+          <section class="panel schedule-panel" id="todaySchedule">
+            <h3>Today's Schedule</h3>
+            <div class="schedule-items">
+              <div class="schedule-item">
+                <div class="schedule-time">08:00</div>
+                <div class="schedule-details">
+                  <span class="schedule-title">Site Setup - 82 Walpole Road</span>
+                  <span class="schedule-assignee">Pat, Charlie</span>
+                </div>
+              </div>
+              
+              <div class="schedule-item">
+                <div class="schedule-time">10:00</div>
+                <div class="schedule-details">
+                  <span class="schedule-title">Foundation Work</span>
+                  <span class="schedule-assignee">Adam, Charlie</span>
+                </div>
+              </div>
+              
+              <div class="schedule-item">
+                <div class="schedule-time">14:00</div>
+                <div class="schedule-details">
+                  <span class="schedule-title">Crown Road Finishing</span>
+                  <span class="schedule-assignee">Pat, Adam</span>
+                </div>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <a href="/portal/calendar.html" class="view-all-link">View Full Calendar →</a>
+            </div>
+          </section>
+        </div>
 
         <!-- Material Overview Panel -->
         <section class="panel" id="materialOverview">
@@ -267,7 +282,7 @@
           </div>
         </section>
 
-        <!-- New Dashboard Widgets -->
+        <!-- New Dashboard Widgets (Metrics) -->
         <div id="dashboardContainer">
           <!-- New dashboard widgets will be loaded here by JavaScript -->
         </div>

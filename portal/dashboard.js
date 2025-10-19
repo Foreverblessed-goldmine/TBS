@@ -137,57 +137,85 @@ class DashboardManager {
     const container = document.getElementById('dashboardContainer');
     if (!container) return;
 
+    // Check if already rendered
+    if (container.querySelector('.metrics-panel')) {
+      return; // Already rendered
+    }
+
     container.innerHTML = this.createDashboardHTML();
   }
 
   createDashboardHTML() {
     return `
-      <div class="dashboard-module">
-        <div class="dashboard-header">
-          <h2>TBS Dashboard</h2>
-          <div class="dashboard-weather">
-            ${this.createWeatherWidget()}
-          </div>
+      <!-- Compact Metrics Row -->
+      <section class="panel metrics-panel">
+        <h3>Key Metrics</h3>
+        <div class="metrics-row">
+          ${this.createCompactMetrics()}
         </div>
+      </section>
 
-        <div class="metrics-grid">
-          ${this.createMetricsCards()}
+      <!-- Recent Activity Panel -->
+      <section class="panel activity-panel">
+        <h3>Recent Activity</h3>
+        <div class="activity-feed">
+          ${this.createActivityFeed()}
         </div>
+      </section>
 
-        <div class="dashboard-content">
-          <div class="dashboard-section">
-            <h3>Recent Activity</h3>
-            <div class="activity-feed">
-              ${this.createActivityFeed()}
-            </div>
-          </div>
-          
-          <div class="dashboard-section">
-            <h3>Quick Actions</h3>
-            <div class="quick-actions">
-              ${this.createQuickActions()}
-            </div>
-          </div>
+      <!-- Quick Actions Panel -->
+      <section class="panel actions-panel">
+        <h3>Quick Actions</h3>
+        <div class="quick-actions">
+          ${this.createQuickActions()}
         </div>
-      </div>
+      </section>
     `;
   }
 
-  createWeatherWidget() {
-    if (!this.weather) return '';
-    
-    const weatherIcon = this.getWeatherIcon(this.weather.condition);
-    
-    return `
-      <div class="weather-widget">
-        <div class="weather-icon">${weatherIcon}</div>
-        <div class="weather-info">
-          <div class="weather-temp">${this.weather.temperature}°C</div>
-          <div class="weather-location">${this.weather.location}</div>
-          <div class="weather-precipitation">${this.weather.precipitation}% rain</div>
+  createCompactMetrics() {
+    const metrics = [
+      {
+        title: 'Active Projects',
+        value: this.metrics.activeProjects || 0,
+        icon: '🏗️',
+        color: 'blue'
+      },
+      {
+        title: 'Tasks Due Today',
+        value: this.metrics.tasksDueToday || 0,
+        icon: '📅',
+        color: this.metrics.tasksDueToday > 5 ? 'red' : 'green'
+      },
+      {
+        title: 'Blocked Tasks',
+        value: this.metrics.blockedTasks || 0,
+        icon: '⚠️',
+        color: this.metrics.blockedTasks > 0 ? 'red' : 'green'
+      },
+      {
+        title: 'Low Stock',
+        value: this.metrics.lowStockItems || 0,
+        icon: '📦',
+        color: this.metrics.lowStockItems > 0 ? 'red' : 'green'
+      },
+      {
+        title: 'Outstanding Invoices',
+        value: this.metrics.outstandingInvoices || 0,
+        icon: '💰',
+        color: 'blue'
+      }
+    ];
+
+    return metrics.map(metric => `
+      <div class="compact-metric ${metric.color}">
+        <div class="metric-icon">${metric.icon}</div>
+        <div class="metric-info">
+          <div class="metric-value">${metric.value}</div>
+          <div class="metric-title">${metric.title}</div>
         </div>
       </div>
-    `;
+    `).join('');
   }
 
   getWeatherIcon(condition) {
@@ -208,63 +236,6 @@ class DashboardManager {
     return icons[condition] || icons.unknown;
   }
 
-  createMetricsCards() {
-    const cards = [
-      {
-        title: 'Active Projects',
-        value: this.metrics.activeProjects || 0,
-        icon: '🏗️',
-        color: 'blue',
-        trend: '+2 this week'
-      },
-      {
-        title: 'Tasks Due Today',
-        value: this.metrics.tasksDueToday || 0,
-        icon: '📅',
-        color: this.metrics.tasksDueToday > 5 ? 'red' : 'green',
-        trend: this.metrics.tasksDueToday > 0 ? 'Due today' : 'All caught up'
-      },
-      {
-        title: 'Tasks This Week',
-        value: this.metrics.tasksDueThisWeek || 0,
-        icon: '📋',
-        color: 'orange',
-        trend: 'Next 7 days'
-      },
-      {
-        title: 'Blocked Tasks',
-        value: this.metrics.blockedTasks || 0,
-        icon: '⚠️',
-        color: this.metrics.blockedTasks > 0 ? 'red' : 'green',
-        trend: this.metrics.blockedTasks > 0 ? 'Needs attention' : 'All clear'
-      },
-      {
-        title: 'Low Stock Items',
-        value: this.metrics.lowStockItems || 0,
-        icon: '📦',
-        color: this.metrics.lowStockItems > 0 ? 'red' : 'green',
-        trend: this.metrics.lowStockItems > 0 ? 'Reorder needed' : 'Stock OK'
-      },
-      {
-        title: 'Outstanding Invoices',
-        value: this.metrics.outstandingInvoices || 0,
-        icon: '💰',
-        color: 'blue',
-        trend: `£${(this.metrics.outstandingAmount || 0).toLocaleString()}`
-      }
-    ];
-
-    return cards.map(card => `
-      <div class="metric-card ${card.color}">
-        <div class="metric-header">
-          <div class="metric-icon">${card.icon}</div>
-          <div class="metric-title">${card.title}</div>
-        </div>
-        <div class="metric-value">${card.value}</div>
-        <div class="metric-trend">${card.trend}</div>
-      </div>
-    `).join('');
-  }
 
   createActivityFeed() {
     // Mock activity feed

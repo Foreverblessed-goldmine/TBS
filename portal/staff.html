@@ -190,18 +190,18 @@
         <h3>Add New Staff Member</h3>
         <button class="modal-close" onclick="closeAddStaffModal()">&times;</button>
       </div>
-      <form id="addStaffForm" class="modal-body">
+      <form id="addStaffForm" class="modal-body" method="POST" onsubmit="return false;">
         <div class="form-group">
           <label for="staffName">Full Name</label>
-          <input type="text" id="staffName" name="name" required placeholder="Enter full name">
+          <input type="text" id="staffName" name="name" autocomplete="name" required placeholder="Enter full name">
         </div>
         <div class="form-group">
           <label for="staffEmail">Email Address</label>
-          <input type="email" id="staffEmail" name="email" required placeholder="Enter email address">
+          <input type="email" id="staffEmail" name="email" autocomplete="email" required placeholder="Enter email address">
         </div>
         <div class="form-group">
           <label for="staffPhone">Phone Number</label>
-          <input type="tel" id="staffPhone" name="phone" placeholder="Enter phone number">
+          <input type="tel" id="staffPhone" name="phone" autocomplete="tel" placeholder="Enter phone number">
         </div>
         <div class="form-group">
           <label for="staffRole">Role</label>
@@ -224,7 +224,7 @@
         </div>
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" onclick="closeAddStaffModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary">Add Staff Member</button>
+          <button type="button" class="btn btn-primary" onclick="submitStaffForm()">Add Staff Member</button>
         </div>
       </form>
     </div>
@@ -299,6 +299,87 @@
       const dropdown = document.getElementById('staffDropdown');
       if (dropdown) {
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+      }
+    };
+
+    // Global function for closing add staff modal
+    window.closeAddStaffModal = () => {
+      const modal = document.getElementById('addStaffModal');
+      if (modal) {
+        modal.style.display = 'none';
+        // Clear the form
+        const form = document.getElementById('addStaffForm');
+        if (form) {
+          form.reset();
+        }
+      }
+    };
+
+    // Global function for closing remove staff modal
+    window.closeRemoveStaffModal = () => {
+      const modal = document.getElementById('removeStaffModal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+    };
+
+    // Global function for submitting staff form
+    window.submitStaffForm = async () => {
+      const form = document.getElementById('addStaffForm');
+      if (!form) return;
+      
+      console.log('Staff form submitted via button click');
+      
+      const formData = new FormData(form);
+      const staffData = {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        role: formData.get('role'),
+        position: formData.get('position'),
+        password: formData.get('password')
+      };
+      
+      console.log('Staff data to submit:', staffData);
+      
+      // Validate required fields
+      if (!staffData.name || !staffData.email || !staffData.role || !staffData.position || !staffData.password) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      try {
+        const res = await fetch('https://tbs-production-9ec7.up.railway.app/api/staff', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`
+          },
+          body: JSON.stringify(staffData)
+        });
+        
+        if (res.ok) {
+          const newStaff = await res.json();
+          console.log('Staff created successfully:', newStaff);
+          
+          // Show success message and close modal
+          alert('Staff member added successfully!');
+          closeAddStaffModal();
+          
+          // Reload the page to show the new staff member
+          location.reload();
+        } else {
+          const error = await res.json().catch(() => ({}));
+          console.error('Staff creation failed:', {
+            status: res.status,
+            statusText: res.statusText,
+            error: error
+          });
+          alert(`Error adding staff: ${error.error || `HTTP ${res.status}: ${res.statusText}`}`);
+        }
+      } catch (err) {
+        console.error('Error adding staff:', err);
+        alert('Error adding staff member. Please try again.');
       }
     };
   </script>

@@ -30,10 +30,13 @@ class DashboardManager {
   async loadDashboardData() {
     try {
       // Load metrics
-      this.metrics = await safe(
-        api.get('/api/metrics/overview'),
-        await this.computeMockMetrics()
-      );
+      try {
+        this.metrics = await api.get('/api/metrics/overview');
+        console.log('Metrics loaded successfully:', this.metrics);
+      } catch (error) {
+        console.warn('Metrics API failed, using mock data:', error);
+        this.metrics = await this.computeMockMetrics();
+      }
 
       // Load weather
       this.weather = await this.loadWeatherData();
@@ -50,7 +53,7 @@ class DashboardManager {
   async loadOutstandingTasks() {
     try {
       // Load outstanding tasks (not done)
-      const response = await fetch('/api/tasks?status=todo,status=in_progress,status=blocked', {
+      const response = await fetch('https://tbs-production-9ec7.up.railway.app/api/tasks?status=todo,in_progress,blocked', {
         credentials: 'include',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,

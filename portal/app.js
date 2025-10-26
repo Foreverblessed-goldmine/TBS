@@ -551,6 +551,9 @@ if (location.pathname.endsWith("/staff.html")) {
     if (addStaffForm) {
       addStaffForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Staff form submitted, preventing default behavior');
         
         const formData = new FormData(addStaffForm);
         const staffData = {
@@ -561,6 +564,8 @@ if (location.pathname.endsWith("/staff.html")) {
           position: formData.get('position'),
           password: formData.get('password')
         };
+        
+        console.log('Staff data to submit:', staffData);
         
         try {
           const res = await fetch('https://tbs-production-9ec7.up.railway.app/api/staff', {
@@ -574,6 +579,7 @@ if (location.pathname.endsWith("/staff.html")) {
           
           if (res.ok) {
             const newStaff = await res.json();
+            console.log('Staff created successfully:', newStaff);
             
             // Add new staff card to the UI
             addStaffCardToUI(newStaff);
@@ -581,6 +587,11 @@ if (location.pathname.endsWith("/staff.html")) {
             // Show success message and close modal
             alert('Staff member added successfully!');
             closeAddStaffModal();
+            
+            // Reload the page to ensure UI is updated
+            setTimeout(() => {
+              location.reload();
+            }, 1000);
           } else {
             const error = await res.json().catch(() => ({}));
             console.error('Staff creation failed:', {

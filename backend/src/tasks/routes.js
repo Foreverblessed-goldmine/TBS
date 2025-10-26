@@ -1,11 +1,11 @@
 import express from "express";
 import { knex } from "../db/knex.js";
-import { bearer } from "../common/middleware.js";
+import { bearer, allow } from "../common/middleware.js";
 
 const router = express.Router();
 
 // Get all tasks
-router.get("/", bearer(), async (req, res) => {
+router.get("/", bearer(), allow("admin", "foreman", "worker", "contractor", "labourer"), async (req, res) => {
   try {
     const { project_id, status, assignee_staff_id, assignee_contractor_id } = req.query;
     

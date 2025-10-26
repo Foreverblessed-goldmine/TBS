@@ -24,57 +24,109 @@ export class ProjectDetails {
   }
 
   async loadProjectData() {
-    // Load project details
-    this.project = await safe(
-      api.get(`/api/projects/${this.projectId}`),
-      await this.loadMockProject()
-    );
+    try {
+      // Load project details
+      console.log(`Loading project data for ID: ${this.projectId}`);
+      
+      // Try to load from API first
+      const projectResponse = await fetch(`https://tbs-production-9ec7.up.railway.app/api/projects/${this.projectId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (projectResponse.ok) {
+        this.project = await projectResponse.json();
+        console.log('Project loaded from API:', this.project);
+      } else {
+        console.log('API failed, using mock data');
+        this.project = await this.loadMockProject();
+      }
+    } catch (error) {
+      console.error('Error loading project data:', error);
+      this.project = await this.loadMockProject();
+    }
 
     // Load tasks
-    this.tasks = await safe(
-      api.get(`/api/projects/${this.projectId}/tasks`),
-      await this.loadMockTasks()
-    );
+    try {
+      const tasksResponse = await fetch(`https://tbs-production-9ec7.up.railway.app/api/projects/${this.projectId}/tasks`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (tasksResponse.ok) {
+        this.tasks = await tasksResponse.json();
+        console.log('Tasks loaded from API:', this.tasks);
+      } else {
+        console.log('Tasks API failed, using mock data');
+        this.tasks = await this.loadMockTasks();
+      }
+    } catch (error) {
+      console.error('Error loading tasks:', error);
+      this.tasks = await this.loadMockTasks();
+    }
 
     // Load photos
-    this.photos = await safe(
-      api.get(`/api/projects/${this.projectId}/photos`),
-      await this.loadMockPhotos()
-    );
+    try {
+      const photosResponse = await fetch(`https://tbs-production-9ec7.up.railway.app/api/projects/${this.projectId}/photos`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (photosResponse.ok) {
+        this.photos = await photosResponse.json();
+        console.log('Photos loaded from API:', this.photos);
+      } else {
+        console.log('Photos API failed, using mock data');
+        this.photos = await this.loadMockPhotos();
+      }
+    } catch (error) {
+      console.error('Error loading photos:', error);
+      this.photos = await this.loadMockPhotos();
+    }
 
     // Load assignments
     this.assignments = await this.loadAssignments();
   }
 
   async loadMockProject() {
-    const mock = await loadMockData('calendar');
-    
-    // Map numeric IDs to string IDs
-    const projectMap = {
-      '1': 'p-82walpole',
-      '2': 'p-crown',
-      '3': 'p-hmo-conversion',
-      '4': 'p-kitchen-reno'
-    };
-    
-    const mappedId = projectMap[this.projectId] || this.projectId;
-    const project = mock.projects.find(p => p.id === mappedId);
-    
-    if (project) {
-      // Add additional project details based on the ID
-      const projectDetails = {
-        id: this.projectId,
-        name: project.name,
-        address: this.getProjectAddress(mappedId),
-        client_name: this.getProjectClient(mappedId),
+    // Direct project data based on the project ID
+    const projectData = {
+      '1': {
+        id: 1,
+        name: '82 Walpole Road',
+        address: '82 Walpole Road, Great Yarmouth',
+        client_name: 'Private Residential',
         status: 'active',
         start_date: '2025-10-01',
         end_date_est: '2025-12-31',
-        notes: this.getProjectNotes(mappedId)
-      };
-      return projectDetails;
+        notes: 'Foundation phase construction project with structural work'
+      },
+      '2': {
+        id: 2,
+        name: 'Crown Road',
+        address: 'Crown Road, Great Yarmouth',
+        client_name: 'Commercial Development',
+        status: 'active',
+        start_date: '2025-09-15',
+        end_date_est: '2026-02-28',
+        notes: 'Commercial development nearing completion'
+      }
+    };
+    
+    const project = projectData[this.projectId];
+    
+    if (project) {
+      console.log('Using mock project data:', project);
+      return project;
     }
     
+    console.log('No mock data found for project ID:', this.projectId);
     return {
       id: this.projectId,
       name: 'Unknown Project',
@@ -115,27 +167,60 @@ export class ProjectDetails {
   }
 
   async loadMockTasks() {
-    const mock = await loadMockData('calendar');
-    
-    // Map numeric IDs to string IDs
-    const projectMap = {
-      '1': 'p-82walpole',
-      '2': 'p-crown',
-      '3': 'p-hmo-conversion',
-      '4': 'p-kitchen-reno'
+    // Mock tasks for each project
+    const tasksData = {
+      '1': [
+        {
+          id: 'task-1-1',
+          title: 'Foundation Excavation',
+          description: 'Excavate foundation area and prepare for concrete',
+          status: 'in_progress',
+          priority: 'high',
+          start: '2025-10-01T09:00:00Z',
+          end: '2025-10-05T17:00:00Z',
+          due_date: '2025-10-05T17:00:00Z',
+          assignees: [
+            { id: 'u-pat', name: 'Pat', role: 'foreman' },
+            { id: 'u-charlie', name: 'Charlie', role: 'labourer' }
+          ],
+          notes: 'Ensure proper depth and level for foundation'
+        },
+        {
+          id: 'task-1-2',
+          title: 'Concrete Pour',
+          description: 'Pour concrete foundation',
+          status: 'todo',
+          priority: 'urgent',
+          start: '2025-10-06T08:00:00Z',
+          end: '2025-10-06T16:00:00Z',
+          due_date: '2025-10-06T16:00:00Z',
+          assignees: [
+            { id: 'u-pat', name: 'Pat', role: 'foreman' }
+          ],
+          notes: 'Weather dependent - check forecast'
+        }
+      ],
+      '2': [
+        {
+          id: 'task-2-1',
+          title: 'Final Inspection',
+          description: 'Complete final building inspection',
+          status: 'todo',
+          priority: 'high',
+          start: '2025-10-20T10:00:00Z',
+          end: '2025-10-20T15:00:00Z',
+          due_date: '2025-10-20T15:00:00Z',
+          assignees: [
+            { id: 'u-adam', name: 'Adam', role: 'foreman' }
+          ],
+          notes: 'Ensure all work meets building standards'
+        }
+      ]
     };
     
-    const mappedId = projectMap[this.projectId] || this.projectId;
-    const tasks = mock.events.filter(e => e.projectId === mappedId) || [];
-    
-    // Transform tasks to include user details
-    return tasks.map(task => ({
-      ...task,
-      assignees: task.assignees ? task.assignees.map(userId => {
-        const user = mock.users.find(u => u.id === userId);
-        return user ? { id: userId, name: user.name, role: user.role } : { id: userId, name: 'Unknown', role: 'unknown' };
-      }) : []
-    }));
+    const tasks = tasksData[this.projectId] || [];
+    console.log('Using mock tasks data:', tasks);
+    return tasks;
   }
 
   async loadMockPhotos() {
@@ -300,7 +385,9 @@ export class ProjectDetails {
           </span>
         </div>
         <div class="task-details">
-          <p><strong>Dates:</strong> ${new Date(task.start).toLocaleDateString()} - ${new Date(task.end).toLocaleDateString()}</p>
+          <p><strong>Description:</strong> ${task.description || 'No description'}</p>
+          <p><strong>Priority:</strong> ${task.priority ? task.priority.charAt(0).toUpperCase() + task.priority.slice(1) : 'Medium'}</p>
+          <p><strong>Due Date:</strong> ${task.due_date ? new Date(task.due_date).toLocaleDateString() : 'Not set'}</p>
           <p><strong>Assignees:</strong> ${task.assignees && task.assignees.length > 0 ? task.assignees.map(a => a.name).join(', ') : 'None'}</p>
           ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ''}
         </div>

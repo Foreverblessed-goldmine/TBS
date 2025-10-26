@@ -13,6 +13,7 @@ import { tasks } from "./tasks/routes.js";
 import { contractors } from "./contractors/routes.js";
 import { calendar } from "./calendar/routes.js";
 import { photos } from "./photos/routes.js";
+import { metrics } from "./metrics/routes.js";
 import { bearer } from "./common/middleware.js";
 import { knex } from "./db/knex.js";
 
@@ -130,6 +131,9 @@ app.use("/api/tasks/calendar", calendar);
 
 // Photos
 app.use("/api/photos", photos);
+
+// Metrics
+app.use("/api/metrics", metrics);
 
 // TODO: assignments (Phase 1b/2)
 

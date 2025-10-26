@@ -533,6 +533,8 @@ async function handlePhotoUpload(projectId) {
       uploadedBy: 'u-danny' // This should come from the current user
     };
     
+    console.log('Uploading photo for project:', photoData);
+    
     // Call the API to create the photo record
     const response = await fetch('https://tbs-production-9ec7.up.railway.app/api/photos', {
       method: 'POST',
@@ -564,7 +566,12 @@ async function handlePhotoUpload(projectId) {
       alert('Photo uploaded successfully!');
     } else {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.error || `API returned ${response.status}`);
+      console.error('Photo upload failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: error
+      });
+      throw new Error(error.error || `API returned ${response.status}: ${response.statusText}`);
     }
   } catch (error) {
     console.error('Failed to upload photo:', error);

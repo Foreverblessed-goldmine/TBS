@@ -141,6 +141,35 @@ export async function ensureSchema() {
       { name:"Charlie", email:"charlie@tbs.local", role:"labourer", position:"Labourer", password_hash:hash("password123") }
     ]);
   }
+
+  // Seed projects (idempotent)
+  const existingProjects = await knex("Projects").count({ c: "*" }).first();
+  if (!existingProjects.c) {
+    await knex("Projects").insert([
+      { 
+        id: 1,
+        ref: "82-WALPOLE", 
+        address: "82 Walpole Road, Great Yarmouth", 
+        client_name: "Private Residential",
+        status: "active",
+        start_date: "2025-10-01",
+        end_date_est: "2025-12-31",
+        notes: "Foundation phase construction project with structural work",
+        created_by: 1
+      },
+      { 
+        id: 2,
+        ref: "CROWN-ROAD", 
+        address: "15 Crown Road, Norwich", 
+        client_name: "Commercial Client",
+        status: "active",
+        start_date: "2025-09-15",
+        end_date_est: "2026-02-28",
+        notes: "Commercial renovation project",
+        created_by: 1
+      }
+    ]);
+  }
 }
 
 

@@ -563,8 +563,12 @@ if (location.pathname.endsWith("/staff.html")) {
         };
         
         try {
-          const res = await api('/api/staff', {
+          const res = await fetch('https://tbs-production-9ec7.up.railway.app/api/staff', {
             method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`
+            },
             body: JSON.stringify(staffData)
           });
           
@@ -579,7 +583,12 @@ if (location.pathname.endsWith("/staff.html")) {
             closeAddStaffModal();
           } else {
             const error = await res.json().catch(() => ({}));
-            alert(`Error adding staff: ${error.error || 'Unknown error'}`);
+            console.error('Staff creation failed:', {
+              status: res.status,
+              statusText: res.statusText,
+              error: error
+            });
+            alert(`Error adding staff: ${error.error || `HTTP ${res.status}: ${res.statusText}`}`);
           }
         } catch (err) {
           console.error('Error adding staff:', err);

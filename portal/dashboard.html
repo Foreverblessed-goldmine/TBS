@@ -297,6 +297,32 @@
           </div>
         </section>
 
+        <!-- Outstanding Tasks Panel -->
+        <section class="panel outstanding-tasks-panel" id="outstandingTasks">
+          <h3>Outstanding Tasks</h3>
+          <div class="tasks-filters">
+            <select id="taskFilter" class="filter-select">
+              <option value="">All Tasks</option>
+              <option value="todo">To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="blocked">Blocked</option>
+            </select>
+            <select id="priorityFilter" class="filter-select">
+              <option value="">All Priorities</option>
+              <option value="urgent">Urgent</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="tasks-list" id="tasksList">
+            <!-- Tasks will be populated by JavaScript -->
+          </div>
+          <div class="panel-footer">
+            <a href="/portal/projects.html" class="view-all-link">View All Tasks →</a>
+          </div>
+        </section>
+
         <!-- New Dashboard Widgets (Metrics) -->
         <div id="dashboardContainer">
           <!-- New dashboard widgets will be loaded here by JavaScript -->

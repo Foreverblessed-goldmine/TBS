@@ -8,11 +8,13 @@ class DashboardManager {
   constructor() {
     this.metrics = {};
     this.weather = null;
+    this.outstandingTasks = [];
     this.switchToMock = false; // Toggle for development
   }
 
   async init() {
     await this.loadDashboardData();
+    await this.loadOutstandingTasks();
     this.render();
     this.setupEventListeners();
     
@@ -43,6 +45,42 @@ class DashboardManager {
       this.weather = await this.loadMockWeather();
       this.render();
     }
+  }
+
+  async loadOutstandingTasks() {
+    try {
+      // Load outstanding tasks (not done)
+      const response = await fetch('/api/tasks?status=todo,status=in_progress,status=blocked', {
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        this.outstandingTasks = await response.json();
+      } else {
+        throw new Error(`API returned ${response.status}`);
+      }
+    } catch (error) {
+      console.warn('Tasks API failed, using mock data:', error);
+      this.outstandingTasks = await this.loadMockTasks();
+    }
+  }
+
+  async loadMockTasks() {
+    const mock = await loadMockData('calendar');
+    return mock.events.map(event => ({
+      id: event.id,
+      title: event.title,
+      status: event.status,
+      priority: 'medium',
+      due_date: event.end,
+      project_ref: event.projectId,
+      staff_name: event.assignees ? event.assignees.join(', ') : null,
+      created_at: event.start
+    }));
   }
 
   async computeMockMetrics() {
@@ -128,6 +166,9 @@ class DashboardManager {
     }
 
     container.innerHTML = this.createDashboardHTML();
+    
+    // Render outstanding tasks
+    this.renderOutstandingTasks();
   }
 
   createDashboardHTML() {
@@ -358,7 +399,110 @@ class DashboardManager {
   }
 
   setupEventListeners() {
-    // Any additional event listeners can be added here
+    // Outstanding tasks filters
+    const taskFilter = document.getElementById('taskFilter');
+    const priorityFilter = document.getElementById('priorityFilter');
+    
+    if (taskFilter) {
+      taskFilter.addEventListener('change', () => this.filterTasks());
+    }
+    
+    if (priorityFilter) {
+      priorityFilter.addEventListener('change', () => this.filterTasks());
+    }
+  }
+
+  renderOutstandingTasks() {
+    const tasksList = document.getElementById('tasksList');
+    if (!tasksList) return;
+
+    const filteredTasks = this.getFilteredTasks();
+    
+    if (filteredTasks.length === 0) {
+      tasksList.innerHTML = '<div class="no-data">No outstanding tasks found</div>';
+      return;
+    }
+
+    tasksList.innerHTML = filteredTasks.map(task => this.createTaskItemHTML(task)).join('');
+  }
+
+  getFilteredTasks() {
+    let filtered = [...this.outstandingTasks];
+    
+    const statusFilter = document.getElementById('taskFilter')?.value;
+    const priorityFilter = document.getElementById('priorityFilter')?.value;
+    
+    if (statusFilter) {
+      filtered = filtered.filter(task => task.status === statusFilter);
+    }
+    
+    if (priorityFilter) {
+      filtered = filtered.filter(task => task.priority === priorityFilter);
+    }
+    
+    // Sort by priority and due date
+    filtered.sort((a, b) => {
+      const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
+      const aPriority = priorityOrder[a.priority] || 2;
+      const bPriority = priorityOrder[b.priority] || 2;
+      
+      if (aPriority !== bPriority) {
+        return bPriority - aPriority;
+      }
+      
+      if (a.due_date && b.due_date) {
+        return new Date(a.due_date) - new Date(b.due_date);
+      }
+      
+      return 0;
+    });
+    
+    return filtered.slice(0, 10); // Show top 10 tasks
+  }
+
+  createTaskItemHTML(task) {
+    const dueDate = task.due_date ? new Date(task.due_date) : null;
+    const now = new Date();
+    const isOverdue = dueDate && dueDate < now;
+    const isDueSoon = dueDate && dueDate <= new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    
+    const dueDateClass = isOverdue ? 'overdue' : isDueSoon ? 'due-soon' : '';
+    const dueDateText = dueDate ? dueDate.toLocaleDateString() : 'No due date';
+    
+    return `
+      <div class="task-item-compact" data-task-id="${task.id}">
+        <div class="task-priority priority-${task.priority}"></div>
+        <div class="task-content">
+          <div class="task-title">${task.title}</div>
+          <div class="task-meta">
+            <span class="task-project">${task.project_ref || 'Unknown Project'}</span>
+            <span class="task-status-badge status-${task.status}">${task.status.replace('_', ' ')}</span>
+            ${task.staff_name ? `
+              <div class="task-assignee">
+                <div class="task-assignee-avatar">${task.staff_name.charAt(0)}</div>
+                <span>${task.staff_name}</span>
+              </div>
+            ` : ''}
+            <div class="task-due-date ${dueDateClass}">
+              <span>📅</span>
+              <span>${dueDateText}</span>
+            </div>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="task-action-btn" onclick="window.markTaskComplete('${task.id}')" title="Mark Complete">
+            ✓
+          </button>
+          <button class="task-action-btn" onclick="window.viewTaskDetails('${task.id}')" title="View Details">
+            👁
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  filterTasks() {
+    this.renderOutstandingTasks();
   }
 }
 
@@ -390,3 +534,37 @@ window.addEventListener('focus', () => {
     initDashboard();
   }
 });
+
+// Global functions for task actions
+window.markTaskComplete = async (taskId) => {
+  try {
+    const response = await fetch(`/api/tasks/${taskId}`, {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status: 'done' })
+    });
+    
+    if (response.ok) {
+      // Refresh the outstanding tasks
+      if (dashboardManager) {
+        await dashboardManager.loadOutstandingTasks();
+        dashboardManager.renderOutstandingTasks();
+      }
+    } else {
+      alert('Failed to mark task as complete');
+    }
+  } catch (error) {
+    console.error('Error marking task complete:', error);
+    alert('Error marking task as complete');
+  }
+};
+
+window.viewTaskDetails = (taskId) => {
+  // Navigate to projects page with task filter
+  sessionStorage.setItem('taskFilter', JSON.stringify({ taskId }));
+  location.href = "/portal/projects.html";
+};

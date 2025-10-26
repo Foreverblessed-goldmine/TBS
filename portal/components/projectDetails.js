@@ -48,7 +48,34 @@ export class ProjectDetails {
 
   async loadMockProject() {
     const mock = await loadMockData('calendar');
-    return mock.projects.find(p => p.id === this.projectId) || {
+    
+    // Map numeric IDs to string IDs
+    const projectMap = {
+      '1': 'p-82walpole',
+      '2': 'p-crown',
+      '3': 'p-hmo-conversion',
+      '4': 'p-kitchen-reno'
+    };
+    
+    const mappedId = projectMap[this.projectId] || this.projectId;
+    const project = mock.projects.find(p => p.id === mappedId);
+    
+    if (project) {
+      // Add additional project details based on the ID
+      const projectDetails = {
+        id: this.projectId,
+        name: project.name,
+        address: this.getProjectAddress(mappedId),
+        client_name: this.getProjectClient(mappedId),
+        status: 'active',
+        start_date: '2025-10-01',
+        end_date_est: '2025-12-31',
+        notes: this.getProjectNotes(mappedId)
+      };
+      return projectDetails;
+    }
+    
+    return {
       id: this.projectId,
       name: 'Unknown Project',
       address: 'Unknown Address',
@@ -56,10 +83,59 @@ export class ProjectDetails {
       notes: 'No details available'
     };
   }
+  
+  getProjectAddress(projectId) {
+    const addresses = {
+      'p-82walpole': '82 Walpole Road, Great Yarmouth',
+      'p-crown': 'Crown Road, Great Yarmouth',
+      'p-hmo-conversion': 'London HMO Conversion',
+      'p-kitchen-reno': 'Kitchen Renovation Project'
+    };
+    return addresses[projectId] || 'Unknown Address';
+  }
+  
+  getProjectClient(projectId) {
+    const clients = {
+      'p-82walpole': 'Private Residential',
+      'p-crown': 'Commercial Development',
+      'p-hmo-conversion': 'HMO Investment',
+      'p-kitchen-reno': 'Private Residential'
+    };
+    return clients[projectId] || 'Not specified';
+  }
+  
+  getProjectNotes(projectId) {
+    const notes = {
+      'p-82walpole': 'Foundation phase construction project with structural work',
+      'p-crown': 'Commercial development nearing completion',
+      'p-hmo-conversion': 'HMO conversion project with multiple bedrooms',
+      'p-kitchen-reno': 'Kitchen renovation with modern appliances'
+    };
+    return notes[projectId] || 'No notes available';
+  }
 
   async loadMockTasks() {
     const mock = await loadMockData('calendar');
-    return mock.events.filter(e => e.projectId === this.projectId) || [];
+    
+    // Map numeric IDs to string IDs
+    const projectMap = {
+      '1': 'p-82walpole',
+      '2': 'p-crown',
+      '3': 'p-hmo-conversion',
+      '4': 'p-kitchen-reno'
+    };
+    
+    const mappedId = projectMap[this.projectId] || this.projectId;
+    const tasks = mock.events.filter(e => e.projectId === mappedId) || [];
+    
+    // Transform tasks to include user details
+    return tasks.map(task => ({
+      ...task,
+      assignees: task.assignees ? task.assignees.map(userId => {
+        const user = mock.users.find(u => u.id === userId);
+        return user ? { id: userId, name: user.name, role: user.role } : { id: userId, name: 'Unknown', role: 'unknown' };
+      }) : []
+    }));
   }
 
   async loadMockPhotos() {
@@ -87,7 +163,7 @@ export class ProjectDetails {
   async loadAssignments() {
     const assignments = [];
     this.tasks.forEach(task => {
-      if (task.assignees) {
+      if (task.assignees && Array.isArray(task.assignees)) {
         task.assignees.forEach(assignee => {
           assignments.push({
             taskId: task.id,
@@ -224,14 +300,19 @@ export class ProjectDetails {
           </span>
         </div>
         <div class="task-details">
-          <p><strong>Dates:</strong> ${task.start} - ${task.end}</p>
-          <p><strong>Assignees:</strong> ${task.assignees ? task.assignees.map(a => a.name).join(', ') : 'None'}</p>
+          <p><strong>Dates:</strong> ${new Date(task.start).toLocaleDateString()} - ${new Date(task.end).toLocaleDateString()}</p>
+          <p><strong>Assignees:</strong> ${task.assignees && task.assignees.length > 0 ? task.assignees.map(a => a.name).join(', ') : 'None'}</p>
           ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ''}
         </div>
         <div class="task-actions">
           <button class="btn btn-secondary btn-sm" onclick="window.openTaskModal('${task.id}')">
             View Details
           </button>
+          ${task.due_date ? `
+            <button class="btn btn-primary btn-sm" onclick="window.pushTaskToCalendar('${task.id}')">
+              Add to Calendar
+            </button>
+          ` : ''}
         </div>
       </div>
     `).join('');
@@ -401,6 +482,32 @@ window.addAssignment = (projectId) => {
 window.removeAssignment = (taskId, userId) => {
   if (confirm('Are you sure you want to remove this assignment?')) {
     console.log('Remove assignment:', taskId, userId);
+  }
+};
+
+window.pushTaskToCalendar = async (taskId) => {
+  try {
+    const response = await fetch(`/api/tasks/calendar/tasks/${taskId}/push`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        all_day: true // Default to all-day event
+      })
+    });
+    
+    if (response.ok) {
+      alert('Task added to calendar successfully!');
+    } else {
+      const error = await response.json().catch(() => ({}));
+      alert(`Failed to add task to calendar: ${error.error || 'Unknown error'}`);
+    }
+  } catch (error) {
+    console.error('Error pushing task to calendar:', error);
+    alert('Error adding task to calendar. Please try again.');
   }
 };
 

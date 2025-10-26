@@ -1,91 +1,42 @@
 import express from "express";
-import { z } from "zod";
 import { knex } from "../db/knex.js";
-import { bearer, allow } from "../common/middleware.js";
-import { parse } from "../common/validate.js";
+import { bearer } from "../common/middleware.js";
 
 const router = express.Router();
-
-// Get tasks for calendar (date range)
-router.get("/calendar/events", bearer(), async (req, res) => {
-  try {
-    const { from, to } = req.query;
-    
-    if (!from || !to) {
-      return res.status(400).json({ error: "from and to dates are required" });
-    }
-    
-    const tasks = await knex("Tasks")
-      .select(
-        "Tasks.id",
-        "Tasks.name as title",
-        "Tasks.start_date as start",
-        "Tasks.end_date as end",
-        "Tasks.status",
-        "Tasks.notes",
-        "Tasks.project_id",
-        "Projects.ref as project_ref",
-        "Projects.address as project_address"
-      )
-      .leftJoin("Projects", "Tasks.project_id", "Projects.id")
-      .whereBetween("Tasks.start_date", [from, to])
-      .orderBy("Tasks.start_date");
-    
-    // Get assignments for each task
-    const taskIds = tasks.map(t => t.id);
-    const assignments = await knex("Assignments")
-      .select("task_id", "user_id", "Users.name as user_name", "Users.role as user_role")
-      .leftJoin("Users", "Assignments.user_id", "Users.id")
-      .whereIn("task_id", taskIds);
-    
-    // Group assignments by task
-    const assignmentsByTask = {};
-    assignments.forEach(assignment => {
-      if (!assignmentsByTask[assignment.task_id]) {
-        assignmentsByTask[assignment.task_id] = [];
-      }
-      assignmentsByTask[assignment.task_id].push({
-        id: assignment.user_id,
-        name: assignment.user_name,
-        role: assignment.user_role
-      });
-    });
-    
-    // Format for calendar
-    const events = tasks.map(task => ({
-      id: `t-${task.id}`,
-      projectId: `p-${task.project_id}`,
-      title: task.title,
-      start: task.start,
-      end: task.end,
-      status: task.status,
-      assignees: assignmentsByTask[task.id] || [],
-      notes: task.notes || "",
-      project: {
-        id: task.project_id,
-        ref: task.project_ref,
-        address: task.project_address
-      }
-    }));
-    
-    res.json(events);
-  } catch (err) {
-    console.error("Error fetching calendar events:", err);
-    res.status(500).json({ error: "Failed to fetch calendar events" });
-  }
-});
 
 // Get all tasks
 router.get("/", bearer(), async (req, res) => {
   try {
-    const tasks = await knex("Tasks")
+    const { project_id, status, assignee_staff_id, assignee_contractor_id } = req.query;
+    
+    let query = knex("Tasks")
       .select(
         "Tasks.*",
         "Projects.ref as project_ref",
-        "Projects.address as project_address"
+        "Projects.address as project_address",
+        "Staff.name as staff_name",
+        "Contractors.company as contractor_company",
+        "Contractors.contact_name as contractor_contact"
       )
       .leftJoin("Projects", "Tasks.project_id", "Projects.id")
-      .orderBy("Tasks.created_at", "desc");
+      .leftJoin("Users as Staff", "Tasks.assignee_staff_id", "Staff.id")
+      .leftJoin("Contractors", "Tasks.assignee_contractor_id", "Contractors.id");
+    
+    // Apply filters
+    if (project_id) {
+      query = query.where("Tasks.project_id", project_id);
+    }
+    if (status) {
+      query = query.where("Tasks.status", status);
+    }
+    if (assignee_staff_id) {
+      query = query.where("Tasks.assignee_staff_id", assignee_staff_id);
+    }
+    if (assignee_contractor_id) {
+      query = query.where("Tasks.assignee_contractor_id", assignee_contractor_id);
+    }
+    
+    const tasks = await query.orderBy("Tasks.priority", "desc").orderBy("Tasks.due_date", "asc");
     
     res.json(tasks);
   } catch (err) {
@@ -101,27 +52,20 @@ router.get("/:id", bearer(), async (req, res) => {
       .select(
         "Tasks.*",
         "Projects.ref as project_ref",
-        "Projects.address as project_address"
+        "Projects.address as project_address",
+        "Staff.name as staff_name",
+        "Contractors.company as contractor_company",
+        "Contractors.contact_name as contractor_contact"
       )
       .leftJoin("Projects", "Tasks.project_id", "Projects.id")
+      .leftJoin("Users as Staff", "Tasks.assignee_staff_id", "Staff.id")
+      .leftJoin("Contractors", "Tasks.assignee_contractor_id", "Contractors.id")
       .where("Tasks.id", req.params.id)
       .first();
     
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
-    
-    // Get assignments
-    const assignments = await knex("Assignments")
-      .select("user_id", "Users.name as user_name", "Users.role as user_role")
-      .leftJoin("Users", "Assignments.user_id", "Users.id")
-      .where("task_id", req.params.id);
-    
-    task.assignees = assignments.map(a => ({
-      id: a.user_id,
-      name: a.user_name,
-      role: a.user_role
-    }));
     
     res.json(task);
   } catch (err) {
@@ -130,126 +74,224 @@ router.get("/:id", bearer(), async (req, res) => {
   }
 });
 
-// Create new task (admin only)
-const CreateTaskSchema = z.object({
-  body: z.object({
-    title: z.string().min(1),
-    projectId: z.number().int().positive(),
-    start: z.string().datetime(),
-    end: z.string().datetime(),
-    status: z.enum(["planned", "active", "blocked", "done"]).default("planned"),
-    assignees: z.array(z.string()).default([]),
-    notes: z.string().optional()
-  })
-});
-
-router.post("/", allow("admin"), parse(CreateTaskSchema), async (req, res) => {
+// Create new task
+router.post("/", bearer(), async (req, res) => {
   try {
-    const { title, projectId, start, end, status, assignees, notes } = req.valid.body;
+    const {
+      project_id,
+      title,
+      description,
+      status = "todo",
+      priority = "medium",
+      assignee_staff_id,
+      assignee_contractor_id,
+      due_date,
+      start_date,
+      end_date,
+      notes
+    } = req.body;
     
-    // Create task
-    const [task] = await knex("Tasks")
+    global.logger.info("Creating new task", { 
+      projectId: project_id,
+      title,
+      priority,
+      status,
+      assigneeStaffId: assignee_staff_id,
+      assigneeContractorId: assignee_contractor_id,
+      createdBy: req.user?.id 
+    });
+    
+    // Validate required fields
+    if (!project_id || !title) {
+      global.logger.warn("Task creation failed - missing required fields", { 
+        projectId: !!project_id, 
+        title: !!title 
+      });
+      return res.status(400).json({ 
+        error: "Missing required fields: project_id, title" 
+      });
+    }
+    
+    // Validate project exists
+    const project = await knex("Projects").where({ id: project_id }).first();
+    if (!project) {
+      global.logger.warn("Task creation failed - project not found", { projectId: project_id });
+      return res.status(400).json({ error: "Project not found" });
+    }
+    
+    // Validate assignee if provided
+    if (assignee_staff_id) {
+      const staff = await knex("Users").where({ id: assignee_staff_id }).first();
+      if (!staff) {
+        global.logger.warn("Task creation failed - staff member not found", { assigneeStaffId: assignee_staff_id });
+        return res.status(400).json({ error: "Staff member not found" });
+      }
+    }
+    
+    if (assignee_contractor_id) {
+      const contractor = await knex("Contractors").where({ id: assignee_contractor_id }).first();
+      if (!contractor) {
+        global.logger.warn("Task creation failed - contractor not found", { assigneeContractorId: assignee_contractor_id });
+        return res.status(400).json({ error: "Contractor not found" });
+      }
+    }
+    
+    // Insert new task
+    const [newTask] = await knex("Tasks")
       .insert({
-        name: title,
-        project_id: projectId,
-        start_date: start.split('T')[0],
-        end_date: end.split('T')[0],
-        status: status,
-        notes: notes
+        project_id,
+        title,
+        description: description || null,
+        status,
+        priority,
+        assignee_staff_id: assignee_staff_id || null,
+        assignee_contractor_id: assignee_contractor_id || null,
+        due_date: due_date || null,
+        start_date: start_date || null,
+        end_date: end_date || null,
+        notes: notes || null
       })
       .returning("*");
     
-    // Create assignments
-    if (assignees && assignees.length > 0) {
-      const assignmentData = assignees.map(userId => ({
-        task_id: task.id,
-        user_id: parseInt(userId.replace('u-', '')),
-        role_on_task: 'assigned'
-      }));
-      
-      await knex("Assignments").insert(assignmentData);
-    }
+    global.logger.info("Task created successfully", { 
+      taskId: newTask.id,
+      title: newTask.title,
+      projectId: newTask.project_id,
+      priority: newTask.priority,
+      createdBy: req.user?.id 
+    });
     
-    res.status(201).json({ id: task.id });
+    res.status(201).json(newTask);
   } catch (err) {
-    console.error("Error creating task:", err);
+    global.logger.error("Failed to create task", err, { 
+      projectId: req.body?.project_id,
+      title: req.body?.title,
+      createdBy: req.user?.id 
+    });
     res.status(500).json({ error: "Failed to create task" });
   }
 });
 
-// Update task (admin + foreman)
-const UpdateTaskSchema = z.object({
-  body: z.object({
-    title: z.string().min(1).optional(),
-    start: z.string().datetime().optional(),
-    end: z.string().datetime().optional(),
-    status: z.enum(["planned", "active", "blocked", "done"]).optional(),
-    assignees: z.array(z.string()).optional(),
-    notes: z.string().optional()
-  })
-});
-
-router.patch("/:id", allow("admin", "foreman"), parse(UpdateTaskSchema), async (req, res) => {
+// Update task
+router.put("/:id", bearer(), async (req, res) => {
   try {
-    const { title, start, end, status, assignees, notes } = req.valid.body;
+    const {
+      title,
+      description,
+      status,
+      priority,
+      assignee_staff_id,
+      assignee_contractor_id,
+      due_date,
+      start_date,
+      end_date,
+      notes
+    } = req.body;
     
     // Check if task exists
-    const existingTask = await knex("Tasks").where("id", req.params.id).first();
+    const existingTask = await knex("Tasks").where({ id: req.params.id }).first();
     if (!existingTask) {
       return res.status(404).json({ error: "Task not found" });
     }
     
-    // Update task
-    const updateData = {};
-    if (title) updateData.name = title;
-    if (start) updateData.start_date = start.split('T')[0];
-    if (end) updateData.end_date = end.split('T')[0];
-    if (status) updateData.status = status;
-    if (notes !== undefined) updateData.notes = notes;
-    
-    if (Object.keys(updateData).length > 0) {
-      await knex("Tasks").where("id", req.params.id).update(updateData);
-    }
-    
-    // Update assignments if provided
-    if (assignees) {
-      // Remove existing assignments
-      await knex("Assignments").where("task_id", req.params.id).del();
-      
-      // Add new assignments
-      if (assignees.length > 0) {
-        const assignmentData = assignees.map(userId => ({
-          task_id: parseInt(req.params.id),
-          user_id: parseInt(userId.replace('u-', '')),
-          role_on_task: 'assigned'
-        }));
-        
-        await knex("Assignments").insert(assignmentData);
+    // Validate assignee if provided
+    if (assignee_staff_id) {
+      const staff = await knex("Users").where({ id: assignee_staff_id }).first();
+      if (!staff) {
+        return res.status(400).json({ error: "Staff member not found" });
       }
     }
     
-    res.json({ ok: true });
+    if (assignee_contractor_id) {
+      const contractor = await knex("Contractors").where({ id: assignee_contractor_id }).first();
+      if (!contractor) {
+        return res.status(400).json({ error: "Contractor not found" });
+      }
+    }
+    
+    // Update task
+    const [updatedTask] = await knex("Tasks")
+      .where({ id: req.params.id })
+      .update({
+        title: title || existingTask.title,
+        description: description !== undefined ? description : existingTask.description,
+        status: status || existingTask.status,
+        priority: priority || existingTask.priority,
+        assignee_staff_id: assignee_staff_id !== undefined ? assignee_staff_id : existingTask.assignee_staff_id,
+        assignee_contractor_id: assignee_contractor_id !== undefined ? assignee_contractor_id : existingTask.assignee_contractor_id,
+        due_date: due_date !== undefined ? due_date : existingTask.due_date,
+        start_date: start_date !== undefined ? start_date : existingTask.start_date,
+        end_date: end_date !== undefined ? end_date : existingTask.end_date,
+        notes: notes !== undefined ? notes : existingTask.notes,
+        updated_at: knex.fn.now()
+      })
+      .returning("*");
+    
+    res.json(updatedTask);
   } catch (err) {
     console.error("Error updating task:", err);
     res.status(500).json({ error: "Failed to update task" });
   }
 });
 
-// Delete task (admin only)
-router.delete("/:id", allow("admin"), async (req, res) => {
+// Delete task (soft delete by setting status to 'done' or hard delete)
+router.delete("/:id", bearer(), async (req, res) => {
   try {
-    const task = await knex("Tasks").where("id", req.params.id).first();
-    if (!task) {
+    const { soft = true } = req.query;
+    
+    // Check if task exists
+    const existingTask = await knex("Tasks").where({ id: req.params.id }).first();
+    if (!existingTask) {
       return res.status(404).json({ error: "Task not found" });
     }
     
-    // Delete task (assignments will be deleted via CASCADE)
-    await knex("Tasks").where("id", req.params.id).del();
-    
-    res.json({ message: "Task deleted successfully" });
+    if (soft) {
+      // Soft delete - mark as done
+      await knex("Tasks")
+        .where({ id: req.params.id })
+        .update({ 
+          status: "done",
+          updated_at: knex.fn.now()
+        });
+      
+      res.json({ message: "Task marked as completed" });
+    } else {
+      // Hard delete
+      await knex("Tasks").where({ id: req.params.id }).del();
+      res.json({ message: "Task deleted successfully" });
+    }
   } catch (err) {
     console.error("Error deleting task:", err);
     res.status(500).json({ error: "Failed to delete task" });
+  }
+});
+
+// Get tasks for a specific project
+router.get("/project/:projectId", bearer(), async (req, res) => {
+  try {
+    const { status } = req.query;
+    
+    let query = knex("Tasks")
+      .select(
+        "Tasks.*",
+        "Staff.name as staff_name",
+        "Contractors.company as contractor_company",
+        "Contractors.contact_name as contractor_contact"
+      )
+      .leftJoin("Users as Staff", "Tasks.assignee_staff_id", "Staff.id")
+      .leftJoin("Contractors", "Tasks.assignee_contractor_id", "Contractors.id")
+      .where("Tasks.project_id", req.params.projectId);
+    
+    if (status) {
+      query = query.where("Tasks.status", status);
+    }
+    
+    const tasks = await query.orderBy("Tasks.priority", "desc").orderBy("Tasks.due_date", "asc");
+    
+    res.json(tasks);
+  } catch (err) {
+    console.error("Error fetching project tasks:", err);
+    res.status(500).json({ error: "Failed to fetch project tasks" });
   }
 });
 

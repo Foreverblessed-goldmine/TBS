@@ -25,7 +25,19 @@ class ContractorManager {
     }
 
     try {
-      this.contractors = await api.get('/api/contractors');
+      const response = await fetch('/api/contractors', {
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        this.contractors = await response.json();
+      } else {
+        throw new Error(`API returned ${response.status}`);
+      }
     } catch (error) {
       console.warn('Contractors API failed, using mock data:', error);
       const mock = await loadMockData('contractors');
@@ -268,12 +280,25 @@ window.deleteContractor = async (contractorId) => {
   if (!confirm('Are you sure you want to delete this contractor?')) return;
   
   try {
-    await api.del(`/api/contractors/${contractorId}`);
-    // Reload the page to refresh the list
-    location.reload();
+    const response = await fetch(`/api/contractors/${contractorId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (response.ok) {
+      // Reload the page to refresh the list
+      location.reload();
+    } else {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || `API returned ${response.status}`);
+    }
   } catch (error) {
     console.error('Failed to delete contractor:', error);
-    alert('Failed to delete contractor. Please try again.');
+    alert(`Failed to delete contractor: ${error.message || 'Please try again.'}`);
   }
 };
 
@@ -470,12 +495,26 @@ async function saveContractor() {
   };
   
   try {
-    await api.post('/api/contractors', contractorData);
-    // Reload the page to refresh the list
-    location.reload();
+    const response = await fetch('/api/contractors', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(contractorData)
+    });
+    
+    if (response.ok) {
+      // Reload the page to refresh the list
+      location.reload();
+    } else {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || `API returned ${response.status}`);
+    }
   } catch (error) {
     console.error('Failed to save contractor:', error);
-    alert('Failed to save contractor. Please try again.');
+    alert(`Failed to save contractor: ${error.message || 'Please try again.'}`);
   }
 }
 

@@ -43,14 +43,18 @@ export async function ensureSchema() {
     await knex.schema.createTable("Tasks", t => {
       t.increments("id").primary();
       t.integer("project_id").references("Projects.id").onDelete("CASCADE");
-      t.string("name").notNullable();
-      t.string("stage");
-      t.date("start_date");
-      t.date("end_date");
-      t.decimal("man_days_est", 6, 2);
+      t.string("title").notNullable();
+      t.text("description");
       t.enu("status", ["todo","in_progress","blocked","done"]).defaultTo("todo");
+      t.enu("priority", ["low","medium","high","urgent"]).defaultTo("medium");
+      t.integer("assignee_staff_id").references("Users.id").onDelete("SET NULL");
+      t.integer("assignee_contractor_id").references("Contractors.id").onDelete("SET NULL");
+      t.datetime("due_date");
+      t.datetime("start_date");
+      t.datetime("end_date");
       t.text("notes");
       t.timestamp("created_at").defaultTo(knex.fn.now());
+      t.timestamp("updated_at").defaultTo(knex.fn.now());
     });
   }
   if (!(await knex.schema.hasTable("Assignments"))) {
@@ -73,6 +77,38 @@ export async function ensureSchema() {
       t.string("caption");
       t.enu("tag", ["before","during","after"]);
       t.timestamp("created_at").defaultTo(knex.fn.now());
+    });
+  }
+  if (!(await knex.schema.hasTable("Contractors"))) {
+    await knex.schema.createTable("Contractors", t => {
+      t.increments("id").primary();
+      t.string("company").notNullable();
+      t.string("trade").notNullable();
+      t.string("contact_name").notNullable();
+      t.string("phone").notNullable();
+      t.string("email").notNullable();
+      t.decimal("rating", 2, 1);
+      t.date("insurance_expiry");
+      t.text("notes");
+      t.enu("status", ["active","inactive"]).defaultTo("active");
+      t.timestamp("created_at").defaultTo(knex.fn.now());
+      t.unique(["company", "contact_name"]);
+    });
+  }
+  if (!(await knex.schema.hasTable("CalendarEvents"))) {
+    await knex.schema.createTable("CalendarEvents", t => {
+      t.increments("id").primary();
+      t.integer("task_id").references("Tasks.id").onDelete("CASCADE");
+      t.integer("project_id").references("Projects.id").onDelete("CASCADE");
+      t.string("title").notNullable();
+      t.datetime("start").notNullable();
+      t.datetime("end");
+      t.text("description");
+      t.string("location");
+      t.enu("event_type", ["task","meeting","deadline","milestone"]).defaultTo("task");
+      t.boolean("all_day").defaultTo(false);
+      t.timestamp("created_at").defaultTo(knex.fn.now());
+      t.timestamp("updated_at").defaultTo(knex.fn.now());
     });
   }
 

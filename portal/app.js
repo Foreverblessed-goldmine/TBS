@@ -523,7 +523,7 @@ if (location.pathname.endsWith("/staff.html")) {
     
     try {
       // Call API to remove staff member
-      const res = await api(`/staff/${window.staffToRemove}`, { method: 'DELETE' });
+      const res = await api(`/api/staff/${window.staffToRemove}`, { method: 'DELETE' });
       
       if (res.ok) {
         // Remove the staff card from the UI
@@ -563,7 +563,7 @@ if (location.pathname.endsWith("/staff.html")) {
         };
         
         try {
-          const res = await api('/staff', {
+          const res = await api('/api/staff', {
             method: 'POST',
             body: JSON.stringify(staffData)
           });

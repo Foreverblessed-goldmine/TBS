@@ -1,11 +1,17 @@
 // TBS API Helper Library
 // Provides consistent API calls with fallback support
 
+// Use Railway backend for all environments
+const API_BASE = 'https://tbs-production-9ec7.up.railway.app/api';
+
 export async function req(path, opts = {}) {
-  const res = await fetch(path, { 
+  const fullPath = path.startsWith('/api/') ? `${API_BASE}${path.substring(4)}` : `${API_BASE}${path}`;
+  
+  const res = await fetch(fullPath, { 
     credentials: 'include', 
     headers: {
-      'Content-Type': 'application/json', 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
       ...(opts.headers || {})
     }, 
     ...opts 

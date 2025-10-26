@@ -495,23 +495,10 @@ async function saveContractor() {
   };
   
   try {
-    const response = await fetch('/api/contractors', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(contractorData)
-    });
+    const response = await api.post('/api/contractors', contractorData);
     
-    if (response.ok) {
-      // Reload the page to refresh the list
-      location.reload();
-    } else {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.error || `API returned ${response.status}`);
-    }
+    // Reload the page to refresh the list
+    location.reload();
   } catch (error) {
     console.error('Failed to save contractor:', error);
     alert(`Failed to save contractor: ${error.message || 'Please try again.'}`);

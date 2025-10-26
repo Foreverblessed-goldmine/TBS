@@ -112,6 +112,23 @@ export async function ensureSchema() {
     });
   }
 
+  // Photos table
+  if (!(await knex.schema.hasTable("Photos"))) {
+    await knex.schema.createTable("Photos", t => {
+      t.increments("id").primary();
+      t.integer("project_id").references("Projects.id").onDelete("CASCADE");
+      t.string("caption");
+      t.enu("tag", ["before","during","after"]).defaultTo("during");
+      t.string("uploaded_by").notNullable();
+      t.string("file_path"); // For storing file path when file upload is implemented
+      t.string("file_name"); // Original filename
+      t.integer("file_size"); // File size in bytes
+      t.string("mime_type"); // MIME type of the file
+      t.timestamp("created_at").defaultTo(knex.fn.now());
+      t.timestamp("updated_at").defaultTo(knex.fn.now());
+    });
+  }
+
   // Seed users (idempotent)
   const existing = await knex("Users").count({ c: "*" }).first();
   if (!existing.c) {

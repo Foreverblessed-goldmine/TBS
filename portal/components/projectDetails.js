@@ -464,13 +464,140 @@ window.createTaskForProject = (projectId) => {
 };
 
 window.uploadPhoto = (projectId) => {
-  // This would open the photo upload modal
-  console.log('Upload photo for project:', projectId);
+  // Create and show photo upload modal
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.id = 'photoUploadModal';
+  modal.style.display = 'block';
+  
+  modal.innerHTML = `
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Upload Photo for Project ${projectId}</h3>
+        <span class="close" onclick="closePhotoModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="photoUploadForm" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="photoFile">Select Photo:</label>
+            <input type="file" id="photoFile" name="photo" accept="image/*" required>
+          </div>
+          <div class="form-group">
+            <label for="photoCaption">Caption:</label>
+            <input type="text" id="photoCaption" name="caption" placeholder="Enter photo caption">
+          </div>
+          <div class="form-group">
+            <label for="photoTag">Tag:</label>
+            <select id="photoTag" name="tag">
+              <option value="before">Before Work</option>
+              <option value="during">During Work</option>
+              <option value="after">After Work</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closePhotoModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Upload Photo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Handle form submission
+  const form = document.getElementById('photoUploadForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await handlePhotoUpload(projectId);
+  });
 };
 
-window.deletePhoto = (photoId) => {
+window.closePhotoModal = () => {
+  const modal = document.getElementById('photoUploadModal');
+  if (modal) {
+    modal.remove();
+  }
+};
+
+async function handlePhotoUpload(projectId) {
+  const form = document.getElementById('photoUploadForm');
+  const formData = new FormData(form);
+  
+  try {
+    // Create photo data for API
+    const photoData = {
+      projectId: parseInt(projectId),
+      caption: formData.get('caption') || 'Untitled',
+      tag: formData.get('tag') || 'during',
+      uploadedBy: 'u-danny' // This should come from the current user
+    };
+    
+    // Call the API to create the photo record
+    const response = await fetch('https://tbs-production-9ec7.up.railway.app/api/photos', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(photoData)
+    });
+    
+    if (response.ok) {
+      const newPhoto = await response.json();
+      
+      // Add the photo to the project's photos array with a preview URL
+      const photoWithPreview = {
+        ...newPhoto,
+        url: URL.createObjectURL(formData.get('photo'))
+      };
+      
+      if (window.currentProjectDetails) {
+        window.currentProjectDetails.photos.push(photoWithPreview);
+        window.currentProjectDetails.render();
+      }
+      
+      // Close modal
+      closePhotoModal();
+      
+      alert('Photo uploaded successfully!');
+    } else {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || `API returned ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Failed to upload photo:', error);
+    alert('Failed to upload photo. Please try again.');
+  }
+}
+
+window.deletePhoto = async (photoId) => {
   if (confirm('Are you sure you want to delete this photo?')) {
-    console.log('Delete photo:', photoId);
+    try {
+      const response = await fetch(`https://tbs-production-9ec7.up.railway.app/api/photos/${photoId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        if (window.currentProjectDetails) {
+          window.currentProjectDetails.photos = window.currentProjectDetails.photos.filter(photo => photo.id != photoId);
+          window.currentProjectDetails.render();
+        }
+        alert('Photo deleted successfully!');
+      } else {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || `API returned ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Failed to delete photo:', error);
+      alert('Failed to delete photo. Please try again.');
+    }
   }
 };
 

@@ -12,6 +12,7 @@ import { users } from "./users/routes.js";
 import { tasks } from "./tasks/routes.js";
 import { contractors } from "./contractors/routes.js";
 import { calendar } from "./calendar/routes.js";
+import { photos } from "./photos/routes.js";
 import { bearer } from "./common/middleware.js";
 import { knex } from "./db/knex.js";
 
@@ -127,7 +128,10 @@ app.use("/api/projects/:projectId/tasks", tasks);
 // Calendar
 app.use("/api/tasks/calendar", calendar);
 
-// TODO: assignments, photos (Phase 1b/2)
+// Photos
+app.use("/api/photos", photos);
+
+// TODO: assignments (Phase 1b/2)
 
 // Error handler
 app.use((err, req, res, _next) => {

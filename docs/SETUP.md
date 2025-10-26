@@ -43,25 +43,22 @@ REFRESH_TTL_DAYS=7
 CORS_ORIGIN=http://localhost:3000
 ```
 
-### 3. Start the Application
+### 3. Deploy the Application
 
-**Terminal 1 - Backend:**
-```bash
-cd backend
-npm run dev
-```
+**Backend (Railway):**
+- The backend is automatically deployed to Railway when you push to GitHub
+- Backend API: https://tbs-production-9ec7.up.railway.app
 
-**Terminal 2 - Frontend:**
-```bash
-# From project root
-node server.js
-```
+**Frontend (Netlify):**
+- The frontend is automatically deployed to Netlify when you push to GitHub
+- Frontend: https://lucent-biscotti-9e0a64.netlify.app
+- Portal: https://lucent-biscotti-9e0a64.netlify.app/portal/login.html
 
 ### 4. Access the Application
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8080
-- **Portal**: http://localhost:3000/portal/login.html
+- **Live Application**: https://lucent-biscotti-9e0a64.netlify.app
+- **Backend API**: https://tbs-production-9ec7.up.railway.app
+- **Portal Login**: https://lucent-biscotti-9e0a64.netlify.app/portal/login.html
 
 ## Default Login Credentials
 

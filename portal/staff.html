@@ -249,5 +249,50 @@
   </div>
 
   <script src="./app.js" type="module"></script>
+  <script>
+    // Global function for adding new staff member
+    function addNewStaff() {
+      // Get the modal element
+      const modal = document.getElementById('addStaffModal');
+      if (modal) {
+        modal.style.display = 'block';
+        // Focus on the first input field
+        const firstInput = modal.querySelector('input');
+        if (firstInput) {
+          firstInput.focus();
+        }
+      } else {
+        console.error('Add staff modal not found');
+      }
+    }
+
+    // Global function for closing modals
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = 'none';
+        // Clear form if it's the add staff modal
+        if (modalId === 'addStaffModal') {
+          const form = modal.querySelector('form');
+          if (form) {
+            form.reset();
+          }
+        }
+      }
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      const addStaffModal = document.getElementById('addStaffModal');
+      const removeStaffModal = document.getElementById('removeStaffModal');
+      
+      if (event.target === addStaffModal) {
+        addStaffModal.style.display = 'none';
+      }
+      if (event.target === removeStaffModal) {
+        removeStaffModal.style.display = 'none';
+      }
+    }
+  </script>
 </body>
 </html>

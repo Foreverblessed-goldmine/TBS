@@ -162,12 +162,12 @@ await ensureSchema();
 logger.info("Database schema initialized successfully");
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   logger.info(`TBS API server started`, {
     port: PORT,
     environment: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString()
   });
-  console.log(`TBS API listening on http://localhost:${PORT}`);
+  console.log(`TBS API listening on http://0.0.0.0:${PORT}`);
 });
 

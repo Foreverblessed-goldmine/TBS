@@ -5204,3 +5204,169 @@ main {
   }
 }
 
+/* Staff Card Styling */
+.staff-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.staff-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
+}
+
+.staff-card-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.staff-avatar {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.staff-avatar .profile-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+}
+
+.staff-info {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.staff-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 0.5rem 0;
+}
+
+.staff-position {
+  color: var(--accent);
+  font-weight: 500;
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.staff-email {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.staff-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.staff-actions .action-btn {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.staff-actions .action-btn.danger {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  padding: 0.4rem;
+}
+
+/* Role Badge Styling */
+.role-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-admin {
+  background: #dc3545;
+  color: white;
+}
+
+.role-foreman {
+  background: #ffc107;
+  color: #212529;
+}
+
+.role-worker {
+  background: #28a745;
+  color: white;
+}
+
+.role-contractor {
+  background: #17a2b8;
+  color: white;
+}
+
+.role-labourer {
+  background: #6c757d;
+  color: white;
+}
+
+.role-unknown {
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+/* Loading, Empty, and Error States */
+.loading-state,
+.empty-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  min-height: 300px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--line);
+  border-top: 4px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-state p,
+.empty-state p,
+.error-state p {
+  color: var(--muted);
+  margin: 0.5rem 0 1.5rem 0;
+}
+
+.empty-state h3,
+.error-state h3 {
+  color: var(--text);
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+.empty-state .btn,
+.error-state .btn {
+  margin-top: 1rem;
+}
+

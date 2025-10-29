@@ -402,23 +402,47 @@ if (location.pathname.includes("/portal/") && !location.pathname.endsWith("/logi
 if (location.pathname.endsWith("/staff.html")) {
   // Load staff data from API
   (async () => {
+    const staffContainer = document.getElementById('staffContainer');
+    if (!staffContainer) {
+      console.error("staffContainer not found!");
+      return;
+    }
+
+    // Show loading state
+    staffContainer.innerHTML = `
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Loading staff members...</p>
+      </div>
+    `;
+
     try {
       console.log("Loading staff data from API...");
       const res = await api("/api/staff");
       const staff = await res.json();
       console.log("Staff data loaded:", staff);
-      populateStaffCards(staff);
+      
+      if (staff.length === 0) {
+        staffContainer.innerHTML = `
+          <div class="empty-state">
+            <h3>No Staff Members</h3>
+            <p>No staff members found. Add your first team member to get started.</p>
+            <button class="btn btn-primary" onclick="addNewStaff()">Add Staff Member</button>
+          </div>
+        `;
+      } else {
+        populateStaffCards(staff);
+      }
     } catch (err) {
       console.error("Error loading staff data:", err);
-      // Fallback to mock data if API fails
-      const mockStaff = [
-        { id: 1, name: "Danny Tighe", role: "admin", position: "Managing Director", email: "danny@tbs.local" },
-        { id: 2, name: "Pat", role: "foreman", position: "Foreman", email: "pat@tbs.local" },
-        { id: 3, name: "Adam", role: "foreman", position: "Foreman", email: "adam@tbs.local" },
-        { id: 4, name: "Charlie", role: "worker", position: "Labourer", email: "charlie@tbs.local" }
-      ];
-      console.log("Using mock staff data:", mockStaff);
-      populateStaffCards(mockStaff);
+      // Show error state
+      staffContainer.innerHTML = `
+        <div class="error-state">
+          <h3>Error Loading Staff</h3>
+          <p>Failed to load staff members. Please try again.</p>
+          <button class="btn btn-secondary" onclick="location.reload()">Retry</button>
+        </div>
+      `;
     }
   })();
 
@@ -440,6 +464,39 @@ if (location.pathname.endsWith("/staff.html")) {
     const user = getStaffMember(userId);
     sessionStorage.setItem('projectFilter', JSON.stringify({ userId, userName: user.name }));
     location.href = "/portal/projects.html";
+  };
+
+  window.deleteStaff = async (userId, userName) => {
+    if (!confirm(`Are you sure you want to delete ${userName}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      console.log(`Deleting staff member ${userId} (${userName})`);
+      const res = await api(`/api/staff/${userId}`, { method: 'DELETE' });
+      
+      if (res.ok) {
+        console.log('Staff member deleted successfully');
+        alert(`${userName} has been deleted successfully.`);
+        
+        // Refresh staff list
+        try {
+          const res = await api("/api/staff");
+          const staff = await res.json();
+          populateStaffCards(staff);
+        } catch (err) {
+          console.error('Error refreshing staff list:', err);
+          location.reload();
+        }
+      } else {
+        const error = await res.json().catch(() => ({}));
+        console.error('Failed to delete staff member:', error);
+        alert(`Failed to delete ${userName}: ${error.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error deleting staff member:', error);
+      alert(`Error deleting ${userName}. Please try again.`);
+    }
   };
 
   window.addNewStaff = () => {
@@ -723,9 +780,10 @@ if (location.pathname.endsWith("/staff.html")) {
       const roleClass = getRoleClass(member.role);
       const card = document.createElement('div');
       card.className = 'staff-card';
+      card.setAttribute('data-user-id', member.id);
+      card.setAttribute('data-role', member.role);
       card.innerHTML = `
-        <div class="staff-header">
-          <h3>${member.name}</h3>
+        <div class="staff-card-header">
           <span class="role-badge ${roleClass}">${member.role.charAt(0).toUpperCase() + member.role.slice(1)}</span>
         </div>
         <div class="staff-avatar">
@@ -738,14 +796,17 @@ if (location.pathname.endsWith("/staff.html")) {
           <p class="staff-email">${member.email}</p>
         </div>
         <div class="staff-actions">
-          <button class="btn btn-secondary btn-sm" onclick="viewStaffSchedule(${member.id})">
+          <button class="action-btn primary" onclick="viewSchedule(${member.id})">
             Schedule
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="viewStaffPayroll(${member.id})">
+          <button class="action-btn secondary" onclick="viewPayroll(${member.id})">
             Payroll
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="viewStaffTasks(${member.id})">
+          <button class="action-btn secondary" onclick="viewTasks(${member.id})">
             Tasks
+          </button>
+          <button class="action-btn danger" onclick="deleteStaff(${member.id}, '${member.name}')">
+            Delete
           </button>
         </div>
       `;

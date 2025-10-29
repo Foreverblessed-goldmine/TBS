@@ -32,8 +32,8 @@ export async function ensureSchema() {
       t.string("address").notNullable();
       t.string("client_name");
       t.enu("status", ["planned","active","on_hold","complete"]).defaultTo("planned");
-      t.date("start_date");
-      t.date("end_date_est");
+      t.datetime("start_date");
+      t.datetime("end_date_est");
       t.text("notes");
       t.integer("created_by").references("Users.id").onDelete("SET NULL");
       t.timestamp("created_at").defaultTo(knex.fn.now());
@@ -121,7 +121,7 @@ export async function ensureSchema() {
       t.string("phone").notNullable();
       t.string("email").notNullable();
       t.decimal("rating", 2, 1);
-      t.date("insurance_expiry");
+      t.datetime("insurance_expiry");
       t.text("notes");
       t.enu("status", ["active","inactive"]).defaultTo("active");
       t.timestamp("created_at").defaultTo(knex.fn.now());
@@ -145,7 +145,7 @@ export async function ensureSchema() {
     });
   }
 
-  // Add performance indexes
+  // Add performance indexes and constraints
   try {
     // Indexes for frequently queried foreign keys
     await knex.schema.alterTable("Tasks", t => {
@@ -176,6 +176,44 @@ export async function ensureSchema() {
     global.logger.info("Performance indexes added successfully");
   } catch (err) {
     global.logger.warn("Failed to add performance indexes (may already exist):", err.message);
+  }
+
+  // Add database-level constraints for critical business rules
+  try {
+    // Add check constraints using raw SQL (SQLite compatible)
+    await knex.raw(`
+      -- Ensure rating is between 0.0 and 5.0
+      ALTER TABLE Contractors ADD CONSTRAINT check_rating 
+      CHECK (rating IS NULL OR (rating >= 0.0 AND rating <= 5.0))
+    `);
+    
+    await knex.raw(`
+      -- Ensure due_date is not in the past when status is not 'done'
+      ALTER TABLE Tasks ADD CONSTRAINT check_due_date 
+      CHECK (due_date IS NULL OR status = 'done' OR due_date >= created_at)
+    `);
+    
+    await knex.raw(`
+      -- Ensure end_date is after start_date for projects
+      ALTER TABLE Projects ADD CONSTRAINT check_project_dates 
+      CHECK (end_date_est IS NULL OR start_date IS NULL OR end_date_est >= start_date)
+    `);
+    
+    await knex.raw(`
+      -- Ensure calendar event end is after start
+      ALTER TABLE CalendarEvents ADD CONSTRAINT check_calendar_dates 
+      CHECK (end IS NULL OR start IS NULL OR end >= start)
+    `);
+    
+    await knex.raw(`
+      -- Ensure task end_date is after start_date
+      ALTER TABLE Tasks ADD CONSTRAINT check_task_dates 
+      CHECK (end_date IS NULL OR start_date IS NULL OR end_date >= start_date)
+    `);
+    
+    global.logger.info("Database constraints added successfully");
+  } catch (err) {
+    global.logger.warn("Failed to add database constraints (may already exist or not supported):", err.message);
   }
 
   // Seed users (idempotent)

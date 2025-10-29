@@ -35,7 +35,7 @@ export async function ensureSchema() {
       t.date("start_date");
       t.date("end_date_est");
       t.text("notes");
-      t.integer("created_by").references("Users.id");
+      t.integer("created_by").references("Users.id").onDelete("SET NULL");
       t.timestamp("created_at").defaultTo(knex.fn.now());
     });
   }
@@ -145,6 +145,38 @@ export async function ensureSchema() {
     });
   }
 
+  // Add performance indexes
+  try {
+    // Indexes for frequently queried foreign keys
+    await knex.schema.alterTable("Tasks", t => {
+      t.index("project_id");
+      t.index("assignee_staff_id");
+      t.index("assignee_contractor_id");
+      t.index("status");
+      t.index("due_date");
+    });
+    
+    await knex.schema.alterTable("Photos", t => {
+      t.index("project_id");
+      t.index("task_id");
+      t.index("uploaded_by");
+    });
+    
+    await knex.schema.alterTable("CalendarEvents", t => {
+      t.index("project_id");
+      t.index("task_id");
+      t.index("start");
+    });
+    
+    await knex.schema.alterTable("Projects", t => {
+      t.index("created_by");
+      t.index("status");
+    });
+    
+    global.logger.info("Performance indexes added successfully");
+  } catch (err) {
+    global.logger.warn("Failed to add performance indexes (may already exist):", err.message);
+  }
 
   // Seed users (idempotent)
   const existing = await knex("Users").count({ c: "*" }).first();

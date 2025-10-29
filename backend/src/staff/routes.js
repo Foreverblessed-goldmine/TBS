@@ -63,8 +63,8 @@ router.post("/", bearer(), async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
     
-    // Check if email already exists
-    const existingUser = await knex("Users").where({ email }).first();
+    // Check if email already exists (case-insensitive)
+    const existingUser = await knex("Users").whereRaw("LOWER(email) = LOWER(?)", [email]).first();
     if (existingUser) {
       global.logger.warn("Staff creation failed - email already exists", { email });
       return res.status(400).json({ error: "Email already exists" });
@@ -114,9 +114,9 @@ router.put("/:id", bearer(), async (req, res) => {
       return res.status(404).json({ error: "Staff member not found" });
     }
     
-    // Check if email is being changed and if it already exists
-    if (email && email !== existingUser.email) {
-      const emailExists = await knex("Users").where({ email }).first();
+    // Check if email is being changed and if it already exists (case-insensitive)
+    if (email && email.toLowerCase() !== existingUser.email.toLowerCase()) {
+      const emailExists = await knex("Users").whereRaw("LOWER(email) = LOWER(?)", [email]).first();
       if (emailExists) {
         return res.status(400).json({ error: "Email already exists" });
       }

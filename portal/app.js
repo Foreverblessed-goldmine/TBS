@@ -675,15 +675,76 @@ if (location.pathname.endsWith("/staff.html")) {
     return staffData[userId] || { name: "Unknown", role: "unknown", position: "Unknown" };
   }
 
-  // Load staff data from API (when available)
+  // Function to populate staff cards from API data
+  function populateStaffCards(staff) {
+    const staffContainer = document.getElementById('staffContainer');
+    if (!staffContainer) return;
+
+    // Clear existing cards
+    staffContainer.innerHTML = '';
+
+    staff.forEach(member => {
+      const roleClass = getRoleClass(member.role);
+      const card = document.createElement('div');
+      card.className = 'staff-card';
+      card.innerHTML = `
+        <div class="staff-header">
+          <h3>${member.name}</h3>
+          <span class="role-badge ${roleClass}">${member.role.charAt(0).toUpperCase() + member.role.slice(1)}</span>
+        </div>
+        <div class="staff-avatar">
+          <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=4A90E2&color=fff&size=80" 
+               alt="${member.name}" class="profile-img">
+        </div>
+        <div class="staff-info">
+          <h4 class="staff-name">${member.name}</h4>
+          <p class="staff-position">${member.position || member.role}</p>
+          <p class="staff-email">${member.email}</p>
+        </div>
+        <div class="staff-actions">
+          <button class="btn btn-secondary btn-sm" onclick="viewStaffSchedule(${member.id})">
+            Schedule
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="viewStaffPayroll(${member.id})">
+            Payroll
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="viewStaffTasks(${member.id})">
+            Tasks
+          </button>
+        </div>
+      `;
+      staffContainer.appendChild(card);
+    });
+  }
+
+  // Helper function to get role class for styling
+  function getRoleClass(role) {
+    const roleClasses = {
+      'admin': 'role-admin',
+      'foreman': 'role-foreman', 
+      'worker': 'role-worker',
+      'contractor': 'role-contractor',
+      'labourer': 'role-labourer'
+    };
+    return roleClasses[role] || 'role-unknown';
+  }
+
+  // Load staff data from API
   (async () => {
     try {
-      // Future: Load staff data from API
-      // const res = await api("/staff");
-      // const staff = await res.json();
-      // populateStaffCards(staff);
+      const res = await api("/api/staff");
+      const staff = await res.json();
+      populateStaffCards(staff);
     } catch (err) {
       console.error("Error loading staff data:", err);
+      // Fallback to mock data if API fails
+      const mockStaff = [
+        { id: 1, name: "Danny Tighe", role: "admin", position: "Managing Director" },
+        { id: 2, name: "Pat", role: "foreman", position: "Foreman" },
+        { id: 3, name: "Adam", role: "foreman", position: "Foreman" },
+        { id: 4, name: "Charlie", role: "worker", position: "Labourer" }
+      ];
+      populateStaffCards(mockStaff);
     }
   })();
 }

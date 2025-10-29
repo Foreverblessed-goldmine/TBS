@@ -57,20 +57,35 @@ export async function ensureSchema() {
       t.timestamp("updated_at").defaultTo(knex.fn.now());
     });
   } else {
-    // Check if Tasks table has the required columns, add them if missing
-    const hasAssigneeStaffId = await knex.schema.hasColumn("Tasks", "assignee_staff_id");
-    const hasAssigneeContractorId = await knex.schema.hasColumn("Tasks", "assignee_contractor_id");
-    
-    if (!hasAssigneeStaffId) {
-      await knex.schema.alterTable("Tasks", t => {
-        t.integer("assignee_staff_id").references("Users.id").onDelete("SET NULL");
-      });
-    }
-    
-    if (!hasAssigneeContractorId) {
-      await knex.schema.alterTable("Tasks", t => {
-        t.integer("assignee_contractor_id").references("Contractors.id").onDelete("SET NULL");
-      });
+    // Comprehensive migration: Check for ALL columns and add missing ones
+    // This handles existing databases that may have been created with an older schema
+    // Note: SQLite has limited ALTER TABLE support, so we add columns without constraints
+    // Foreign keys and ENUM constraints are enforced at application level for SQLite
+    const columnsToCheck = [
+      { name: "description", sql: "ADD COLUMN description TEXT" },
+      { name: "status", sql: "ADD COLUMN status TEXT DEFAULT 'todo'" },
+      { name: "priority", sql: "ADD COLUMN priority TEXT DEFAULT 'medium'" },
+      { name: "assignee_staff_id", sql: "ADD COLUMN assignee_staff_id INTEGER" },
+      { name: "assignee_contractor_id", sql: "ADD COLUMN assignee_contractor_id INTEGER" },
+      { name: "due_date", sql: "ADD COLUMN due_date DATETIME" },
+      { name: "start_date", sql: "ADD COLUMN start_date DATETIME" },
+      { name: "end_date", sql: "ADD COLUMN end_date DATETIME" },
+      { name: "notes", sql: "ADD COLUMN notes TEXT" },
+      { name: "updated_at", sql: "ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" }
+    ];
+
+    for (const col of columnsToCheck) {
+      const hasColumn = await knex.schema.hasColumn("Tasks", col.name);
+      if (!hasColumn) {
+        try {
+          // Use raw SQL for SQLite compatibility
+          await knex.raw(`ALTER TABLE Tasks ${col.sql}`);
+          global.logger.info(`Added missing column: Tasks.${col.name}`);
+        } catch (err) {
+          global.logger.warn(`Failed to add column Tasks.${col.name}:`, err.message);
+          // Continue with other columns even if one fails
+        }
+      }
     }
   }
   if (!(await knex.schema.hasTable("Assignments"))) {

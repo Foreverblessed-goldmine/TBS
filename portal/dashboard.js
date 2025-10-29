@@ -52,20 +52,8 @@ class DashboardManager {
 
   async loadOutstandingTasks() {
     try {
-      // Load outstanding tasks (not done)
-      const response = await fetch('https://tbs-production-9ec7.up.railway.app/api/tasks?status=todo,in_progress,blocked', {
-        credentials: 'include',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (response.ok) {
-        this.outstandingTasks = await response.json();
-      } else {
-        throw new Error(`API returned ${response.status}`);
-      }
+      // Load outstanding tasks (not done) using centralized API helper
+      this.outstandingTasks = await api.get('/api/tasks?status=todo,in_progress,blocked');
     } catch (error) {
       console.warn('Tasks API failed, using mock data:', error);
       this.outstandingTasks = await this.loadMockTasks();
@@ -541,24 +529,12 @@ window.addEventListener('focus', () => {
 // Global functions for task actions
 window.markTaskComplete = async (taskId) => {
   try {
-    const response = await fetch(`/api/tasks/${taskId}`, {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ status: 'done' })
-    });
+    await api.patch(`/api/tasks/${taskId}`, { status: 'done' });
     
-    if (response.ok) {
-      // Refresh the outstanding tasks
-      if (dashboardManager) {
-        await dashboardManager.loadOutstandingTasks();
-        dashboardManager.renderOutstandingTasks();
-      }
-    } else {
-      alert('Failed to mark task as complete');
+    // Refresh the outstanding tasks
+    if (dashboardManager) {
+      await dashboardManager.loadOutstandingTasks();
+      dashboardManager.renderOutstandingTasks();
     }
   } catch (error) {
     console.error('Error marking task complete:', error);

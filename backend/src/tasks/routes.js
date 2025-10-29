@@ -27,7 +27,13 @@ router.get("/", bearer(), allow("admin", "foreman", "worker", "contractor", "lab
       query = query.where("Tasks.project_id", project_id);
     }
     if (status) {
-      query = query.where("Tasks.status", status);
+      // Handle comma-separated status values
+      const statusList = status.split(',').map(s => s.trim());
+      if (statusList.length === 1) {
+        query = query.where("Tasks.status", statusList[0]);
+      } else {
+        query = query.whereIn("Tasks.status", statusList);
+      }
     }
     if (assignee_staff_id) {
       query = query.where("Tasks.assignee_staff_id", assignee_staff_id);

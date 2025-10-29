@@ -170,6 +170,72 @@ export async function ensureSchema() {
       }
     ]);
   }
+
+  // Seed sample tasks (idempotent)
+  const existingTasks = await knex("Tasks").count({ c: "*" }).first();
+  if (!existingTasks.c) {
+    await knex("Tasks").insert([
+      {
+        project_id: 1,
+        title: "Foundation Excavation",
+        description: "Excavate foundation area to required depth",
+        status: "in_progress",
+        priority: "high",
+        assignee_staff_id: 2, // Pat
+        due_date: "2025-11-15",
+        start_date: "2025-10-15"
+      },
+      {
+        project_id: 1,
+        title: "Concrete Pour - Foundation",
+        description: "Pour concrete foundation slab",
+        status: "todo",
+        priority: "urgent",
+        assignee_staff_id: 3, // Adam
+        due_date: "2025-11-20",
+        start_date: "2025-11-16"
+      },
+      {
+        project_id: 1,
+        title: "Block Work - Ground Floor",
+        description: "Build ground floor block work walls",
+        status: "blocked",
+        priority: "medium",
+        assignee_staff_id: 2, // Pat
+        due_date: "2025-12-01",
+        notes: "Waiting for concrete to cure"
+      },
+      {
+        project_id: 2,
+        title: "Kitchen Renovation",
+        description: "Complete kitchen renovation work",
+        status: "done",
+        priority: "high",
+        assignee_staff_id: 3, // Adam
+        due_date: "2025-10-25",
+        start_date: "2025-10-01",
+        end_date: "2025-10-25"
+      },
+      {
+        project_id: 2,
+        title: "Bathroom Tiling",
+        description: "Install bathroom tiles and fixtures",
+        status: "in_progress",
+        priority: "medium",
+        assignee_staff_id: 4, // Charlie
+        due_date: "2025-11-30"
+      },
+      {
+        project_id: 2,
+        title: "Electrical Work",
+        description: "Install electrical outlets and lighting",
+        status: "todo",
+        priority: "high",
+        due_date: "2025-12-15",
+        notes: "Contractor work - John Smith Electrician"
+      }
+    ]);
+  }
 }
 
 

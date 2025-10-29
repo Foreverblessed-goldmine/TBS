@@ -91,3 +91,4 @@ router.get("/overview", allow("admin", "foreman", "worker", "contractor", "labou
 });
 
 export { router as metrics };
+

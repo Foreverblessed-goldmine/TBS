@@ -56,6 +56,22 @@ export async function ensureSchema() {
       t.timestamp("created_at").defaultTo(knex.fn.now());
       t.timestamp("updated_at").defaultTo(knex.fn.now());
     });
+  } else {
+    // Check if Tasks table has the required columns, add them if missing
+    const hasAssigneeStaffId = await knex.schema.hasColumn("Tasks", "assignee_staff_id");
+    const hasAssigneeContractorId = await knex.schema.hasColumn("Tasks", "assignee_contractor_id");
+    
+    if (!hasAssigneeStaffId) {
+      await knex.schema.alterTable("Tasks", t => {
+        t.integer("assignee_staff_id").references("Users.id").onDelete("SET NULL");
+      });
+    }
+    
+    if (!hasAssigneeContractorId) {
+      await knex.schema.alterTable("Tasks", t => {
+        t.integer("assignee_contractor_id").references("Contractors.id").onDelete("SET NULL");
+      });
+    }
   }
   if (!(await knex.schema.hasTable("Assignments"))) {
     await knex.schema.createTable("Assignments", t => {

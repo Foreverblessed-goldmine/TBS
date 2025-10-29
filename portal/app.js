@@ -403,8 +403,10 @@ if (location.pathname.endsWith("/staff.html")) {
   // Load staff data from API
   (async () => {
     try {
+      console.log("Loading staff data from API...");
       const res = await api("/api/staff");
       const staff = await res.json();
+      console.log("Staff data loaded:", staff);
       populateStaffCards(staff);
     } catch (err) {
       console.error("Error loading staff data:", err);
@@ -415,6 +417,7 @@ if (location.pathname.endsWith("/staff.html")) {
         { id: 3, name: "Adam", role: "foreman", position: "Foreman", email: "adam@tbs.local" },
         { id: 4, name: "Charlie", role: "worker", position: "Labourer", email: "charlie@tbs.local" }
       ];
+      console.log("Using mock staff data:", mockStaff);
       populateStaffCards(mockStaff);
     }
   })();
@@ -446,10 +449,14 @@ if (location.pathname.endsWith("/staff.html")) {
   };
 
   window.toggleStaffDropdown = () => {
+    console.log("toggleStaffDropdown called");
     const dropdown = document.getElementById('staffDropdown');
     const btn = document.querySelector('.staff-management-btn');
     
-    if (dropdown.classList.contains('open')) {
+    console.log("dropdown found:", dropdown);
+    console.log("btn found:", btn);
+    
+    if (dropdown && dropdown.classList.contains('open')) {
       closeStaffDropdown();
     } else {
       openStaffDropdown();
@@ -457,11 +464,21 @@ if (location.pathname.endsWith("/staff.html")) {
   };
 
   window.openStaffDropdown = () => {
+    console.log("openStaffDropdown called");
     const dropdown = document.getElementById('staffDropdown');
     const btn = document.querySelector('.staff-management-btn');
     
-    dropdown.classList.add('open');
-    btn.classList.add('active');
+    console.log("dropdown:", dropdown);
+    console.log("btn:", btn);
+    
+    if (dropdown) {
+      dropdown.classList.add('open');
+      console.log("Added 'open' class to dropdown");
+    }
+    if (btn) {
+      btn.classList.add('active');
+      console.log("Added 'active' class to btn");
+    }
     
     // Populate staff list
     populateStaffDropdown();
@@ -690,11 +707,17 @@ if (location.pathname.endsWith("/staff.html")) {
 
   // Function to populate staff cards from API data
   window.populateStaffCards = function(staff) {
+    console.log("populateStaffCards called with:", staff);
     const staffContainer = document.getElementById('staffContainer');
-    if (!staffContainer) return;
+    console.log("staffContainer found:", staffContainer);
+    if (!staffContainer) {
+      console.error("staffContainer not found!");
+      return;
+    }
 
     // Clear existing cards
     staffContainer.innerHTML = '';
+    console.log("Populating", staff.length, "staff members");
 
     staff.forEach(member => {
       const roleClass = getRoleClass(member.role);

@@ -62,7 +62,6 @@ export async function ensureSchema() {
     // Note: SQLite has limited ALTER TABLE support, so we add columns without constraints
     // Foreign keys and ENUM constraints are enforced at application level for SQLite
     const columnsToCheck = [
-      { name: "name", sql: "ADD COLUMN name TEXT NOT NULL DEFAULT 'Untitled Task'" },
       { name: "title", sql: "ADD COLUMN title TEXT NOT NULL DEFAULT 'Untitled Task'" },
       { name: "description", sql: "ADD COLUMN description TEXT" },
       { name: "status", sql: "ADD COLUMN status TEXT DEFAULT 'todo'" },
@@ -146,22 +145,6 @@ export async function ensureSchema() {
     });
   }
 
-  // Photos table
-  if (!(await knex.schema.hasTable("Photos"))) {
-    await knex.schema.createTable("Photos", t => {
-      t.increments("id").primary();
-      t.integer("project_id").references("Projects.id").onDelete("CASCADE");
-      t.string("caption");
-      t.enu("tag", ["before","during","after"]).defaultTo("during");
-      t.string("uploaded_by").notNullable();
-      t.string("file_path"); // For storing file path when file upload is implemented
-      t.string("file_name"); // Original filename
-      t.integer("file_size"); // File size in bytes
-      t.string("mime_type"); // MIME type of the file
-      t.timestamp("created_at").defaultTo(knex.fn.now());
-      t.timestamp("updated_at").defaultTo(knex.fn.now());
-    });
-  }
 
   // Seed users (idempotent)
   const existing = await knex("Users").count({ c: "*" }).first();
@@ -211,7 +194,6 @@ export async function ensureSchema() {
     await knex("Tasks").insert([
       {
         project_id: 1,
-        name: "Foundation Excavation",
         title: "Foundation Excavation",
         description: "Excavate foundation area to required depth",
         status: "in_progress",
@@ -222,7 +204,6 @@ export async function ensureSchema() {
       },
       {
         project_id: 1,
-        name: "Concrete Pour - Foundation",
         title: "Concrete Pour - Foundation",
         description: "Pour concrete foundation slab",
         status: "todo",
@@ -233,7 +214,6 @@ export async function ensureSchema() {
       },
       {
         project_id: 1,
-        name: "Block Work - Ground Floor",
         title: "Block Work - Ground Floor",
         description: "Build ground floor block work walls",
         status: "blocked",
@@ -244,7 +224,6 @@ export async function ensureSchema() {
       },
       {
         project_id: 2,
-        name: "Kitchen Renovation",
         title: "Kitchen Renovation",
         description: "Complete kitchen renovation work",
         status: "done",
@@ -256,7 +235,6 @@ export async function ensureSchema() {
       },
       {
         project_id: 2,
-        name: "Bathroom Tiling",
         title: "Bathroom Tiling",
         description: "Install bathroom tiles and fixtures",
         status: "in_progress",
@@ -266,7 +244,6 @@ export async function ensureSchema() {
       },
       {
         project_id: 2,
-        name: "Electrical Work",
         title: "Electrical Work",
         description: "Install electrical outlets and lighting",
         status: "todo",

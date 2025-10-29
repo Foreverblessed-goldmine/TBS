@@ -62,6 +62,7 @@ export async function ensureSchema() {
     // Note: SQLite has limited ALTER TABLE support, so we add columns without constraints
     // Foreign keys and ENUM constraints are enforced at application level for SQLite
     const columnsToCheck = [
+      { name: "name", sql: "ADD COLUMN name TEXT NOT NULL DEFAULT 'Untitled Task'" },
       { name: "title", sql: "ADD COLUMN title TEXT NOT NULL DEFAULT 'Untitled Task'" },
       { name: "description", sql: "ADD COLUMN description TEXT" },
       { name: "status", sql: "ADD COLUMN status TEXT DEFAULT 'todo'" },
@@ -178,43 +179,10 @@ export async function ensureSchema() {
     global.logger.warn("Failed to add performance indexes (may already exist):", err.message);
   }
 
-  // Add database-level constraints for critical business rules
-  try {
-    // Add check constraints using raw SQL (SQLite compatible)
-    await knex.raw(`
-      -- Ensure rating is between 0.0 and 5.0
-      ALTER TABLE Contractors ADD CONSTRAINT check_rating 
-      CHECK (rating IS NULL OR (rating >= 0.0 AND rating <= 5.0))
-    `);
-    
-    await knex.raw(`
-      -- Ensure due_date is not in the past when status is not 'done'
-      ALTER TABLE Tasks ADD CONSTRAINT check_due_date 
-      CHECK (due_date IS NULL OR status = 'done' OR due_date >= created_at)
-    `);
-    
-    await knex.raw(`
-      -- Ensure end_date is after start_date for projects
-      ALTER TABLE Projects ADD CONSTRAINT check_project_dates 
-      CHECK (end_date_est IS NULL OR start_date IS NULL OR end_date_est >= start_date)
-    `);
-    
-    await knex.raw(`
-      -- Ensure calendar event end is after start
-      ALTER TABLE CalendarEvents ADD CONSTRAINT check_calendar_dates 
-      CHECK (end IS NULL OR start IS NULL OR end >= start)
-    `);
-    
-    await knex.raw(`
-      -- Ensure task end_date is after start_date
-      ALTER TABLE Tasks ADD CONSTRAINT check_task_dates 
-      CHECK (end_date IS NULL OR start_date IS NULL OR end_date >= start_date)
-    `);
-    
-    global.logger.info("Database constraints added successfully");
-  } catch (err) {
-    global.logger.warn("Failed to add database constraints (may already exist or not supported):", err.message);
-  }
+  // Note: SQLite doesn't support ADD CONSTRAINT in ALTER TABLE
+  // Database-level constraints would require table recreation
+  // For now, we rely on application-level validation
+  global.logger.info("Database constraints skipped - SQLite doesn't support ADD CONSTRAINT in ALTER TABLE");
 
   // Seed users (idempotent)
   const existing = await knex("Users").count({ c: "*" }).first();
@@ -264,6 +232,7 @@ export async function ensureSchema() {
     await knex("Tasks").insert([
       {
         project_id: 1,
+        name: "Foundation Excavation",
         title: "Foundation Excavation",
         description: "Excavate foundation area to required depth",
         status: "in_progress",
@@ -274,6 +243,7 @@ export async function ensureSchema() {
       },
       {
         project_id: 1,
+        name: "Concrete Pour - Foundation",
         title: "Concrete Pour - Foundation",
         description: "Pour concrete foundation slab",
         status: "todo",
@@ -284,6 +254,7 @@ export async function ensureSchema() {
       },
       {
         project_id: 1,
+        name: "Block Work - Ground Floor",
         title: "Block Work - Ground Floor",
         description: "Build ground floor block work walls",
         status: "blocked",
@@ -294,6 +265,7 @@ export async function ensureSchema() {
       },
       {
         project_id: 2,
+        name: "Kitchen Renovation",
         title: "Kitchen Renovation",
         description: "Complete kitchen renovation work",
         status: "done",
@@ -305,6 +277,7 @@ export async function ensureSchema() {
       },
       {
         project_id: 2,
+        name: "Bathroom Tiling",
         title: "Bathroom Tiling",
         description: "Install bathroom tiles and fixtures",
         status: "in_progress",
@@ -314,6 +287,7 @@ export async function ensureSchema() {
       },
       {
         project_id: 2,
+        name: "Electrical Work",
         title: "Electrical Work",
         description: "Install electrical outlets and lighting",
         status: "todo",

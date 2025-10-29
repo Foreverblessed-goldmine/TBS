@@ -400,6 +400,25 @@ if (location.pathname.includes("/portal/") && !location.pathname.endsWith("/logi
 
 // ——— staff page ———
 if (location.pathname.endsWith("/staff.html")) {
+  // Load staff data from API
+  (async () => {
+    try {
+      const res = await api("/api/staff");
+      const staff = await res.json();
+      populateStaffCards(staff);
+    } catch (err) {
+      console.error("Error loading staff data:", err);
+      // Fallback to mock data if API fails
+      const mockStaff = [
+        { id: 1, name: "Danny Tighe", role: "admin", position: "Managing Director", email: "danny@tbs.local" },
+        { id: 2, name: "Pat", role: "foreman", position: "Foreman", email: "pat@tbs.local" },
+        { id: 3, name: "Adam", role: "foreman", position: "Foreman", email: "adam@tbs.local" },
+        { id: 4, name: "Charlie", role: "worker", position: "Labourer", email: "charlie@tbs.local" }
+      ];
+      populateStaffCards(mockStaff);
+    }
+  })();
+
   // Staff management functions
   window.viewSchedule = (userId) => {
     // Calendar functionality disabled - show message
@@ -670,7 +689,7 @@ if (location.pathname.endsWith("/staff.html")) {
   }
 
   // Function to populate staff cards from API data
-  function populateStaffCards(staff) {
+  window.populateStaffCards = function(staff) {
     const staffContainer = document.getElementById('staffContainer');
     if (!staffContainer) return;
 
@@ -712,7 +731,7 @@ if (location.pathname.endsWith("/staff.html")) {
   }
 
   // Helper function to get role class for styling
-  function getRoleClass(role) {
+  window.getRoleClass = function(role) {
     const roleClasses = {
       'admin': 'role-admin',
       'foreman': 'role-foreman', 

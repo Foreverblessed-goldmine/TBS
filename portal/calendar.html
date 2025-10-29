@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>TBS – Calendar</title>
   <link rel="stylesheet" href="./styles.css" />
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
 </head>
 <body class="portal">
   <div class="layout">
@@ -36,101 +35,33 @@
       </div>
 
       <main id="dash" class="dash-grid">
-    <div class="calendar-container">
-      <!-- Calendar Header -->
-      <div class="calendar-header">
-        <h2>Project Calendar</h2>
-        <button class="btn btn-primary only-admin" id="newEventBtn" style="display: none;">New Event</button>
-      </div>
+        <div class="calendar-container">
+          <!-- Calendar Header -->
+          <div class="calendar-header">
+            <h2>Project Calendar</h2>
+            <div class="calendar-placeholder">
+              <p>Calendar functionality is temporarily disabled and will be re-implemented later.</p>
+              <p>This page will show project schedules and task timelines when ready.</p>
+            </div>
+          </div>
 
-      <!-- Error Display -->
-      <div id="cal-error" class="cal-error" hidden></div>
-      
-      <!-- Calendar -->
-      <div id="tbs-calendar"></div>
-    </div>
-  </main>
-
-  <!-- Event Modal -->
-  <div id="eventModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modalTitle">Create New Task</h3>
-        <button class="modal-close" id="modalClose">&times;</button>
-      </div>
-      <form id="eventForm" class="modal-body">
-        <div class="form-group">
-          <label for="eventTitle">Task Title *</label>
-          <input type="text" id="eventTitle" name="title" required />
-        </div>
-        
-        <div class="form-group">
-          <label for="eventProject">Project *</label>
-          <select id="eventProject" name="projectId" required>
-            <option value="">Select Project</option>
-          </select>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="eventStartDate">Start Date *</label>
-            <input type="date" id="eventStartDate" name="startDate" required />
-          </div>
-          <div class="form-group">
-            <label for="eventStartTime">Start Time *</label>
-            <input type="time" id="eventStartTime" name="startTime" required />
+          <!-- Calendar Placeholder -->
+          <div id="tbs-calendar" class="calendar-placeholder-content">
+            <div class="placeholder-message">
+              <h3>📅 Calendar Coming Soon</h3>
+              <p>The calendar functionality is being redesigned and will be available in a future update.</p>
+              <p>For now, you can manage tasks and projects through the other sections of the portal.</p>
+              <div class="placeholder-actions">
+                <a href="/portal/projects.html" class="btn btn-primary">View Projects</a>
+                <a href="/portal/dashboard.html" class="btn btn-secondary">Back to Dashboard</a>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="eventEndDate">End Date *</label>
-            <input type="date" id="eventEndDate" name="endDate" required />
-          </div>
-          <div class="form-group">
-            <label for="eventEndTime">End Time *</label>
-            <input type="time" id="eventEndTime" name="endTime" required />
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="eventStatus">Status *</label>
-          <select id="eventStatus" name="status" required>
-            <option value="planned">Planned</option>
-            <option value="active">Active</option>
-            <option value="blocked">Blocked</option>
-            <option value="done">Done</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label for="eventAssignees">Assigned Staff</label>
-          <div id="assigneeCheckboxes" class="checkbox-group">
-            <!-- Populated by JavaScript -->
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="eventNotes">Notes</label>
-          <textarea id="eventNotes" name="notes" rows="3" placeholder="Additional notes..."></textarea>
-        </div>
-        
-        <div id="conflictWarning" class="conflict-warning" style="display: none;">
-          ⚠️ Some assigned staff have conflicting events
-        </div>
-      </form>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="modalCancel">Cancel</button>
-        <button type="button" class="btn btn-danger only-admin" id="deleteBtn" style="display: none;">Delete</button>
-        <button type="submit" form="eventForm" class="btn btn-primary" id="saveBtn">Save</button>
-      </div>
-    </div>
       </main>
     </div>
   </div>
 
   <script src="./app.js" type="module"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-  <script src="./calendar.js" type="module"></script>
 </body>
 </html>

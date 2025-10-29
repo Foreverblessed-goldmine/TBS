@@ -61,17 +61,8 @@ class DashboardManager {
   }
 
   async loadMockTasks() {
-    const mock = await loadMockData('calendar');
-    return mock.events.map(event => ({
-      id: event.id,
-      title: event.title,
-      status: event.status,
-      priority: 'medium',
-      due_date: event.end,
-      project_ref: event.projectId,
-      staff_name: event.assignees ? event.assignees.join(', ') : null,
-      created_at: event.start
-    }));
+    // Calendar functionality disabled - return empty array
+    return [];
   }
 
   async computeMockMetrics() {
@@ -373,12 +364,11 @@ class DashboardManager {
 
   createQuickActions() {
     const actions = [
-      { title: 'Create Task', icon: '➕', action: 'window.location.href="/portal/calendar.html"' },
       { title: 'Add Project', icon: '🏗️', action: 'window.location.href="/portal/projects.html"' },
       { title: 'Issue Stock', icon: '📦', action: 'window.location.href="/portal/warehouse.html"' },
       { title: 'Create Invoice', icon: '💰', action: 'window.location.href="/portal/finance.html"' },
       { title: 'Add Contractor', icon: '👷', action: 'window.location.href="/portal/contractors.html"' },
-      { title: 'View Calendar', icon: '📅', action: 'window.location.href="/portal/calendar.html"' }
+      { title: 'Manage Staff', icon: '👥', action: 'window.location.href="/portal/staff.html"' }
     ];
 
     return actions.map(action => `

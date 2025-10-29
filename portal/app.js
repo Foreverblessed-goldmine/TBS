@@ -268,9 +268,8 @@ if (location.pathname.endsWith("/projects.html")) {
 
         window.viewProjectSchedule = (projectId) => {
           console.log(`Viewing schedule for project ${projectId}`);
-          // TODO: Navigate to calendar with project filter
-          sessionStorage.setItem('calendarFilter', JSON.stringify({ projectId }));
-          location.href = "/portal/calendar.html";
+          // Calendar functionality disabled - show message
+          alert('Calendar functionality is temporarily disabled. Schedule viewing will be available in a future update.');
         };
 
         window.viewProjectPhotos = (projectId) => {
@@ -285,9 +284,8 @@ if (location.pathname.endsWith("/projects.html")) {
         // Contractor card action handlers
         window.viewContractorSchedule = (contractorId) => {
           console.log(`Viewing schedule for contractor ${contractorId}`);
-          // TODO: Navigate to calendar with contractor filter
-          sessionStorage.setItem('calendarFilter', JSON.stringify({ contractorId }));
-          location.href = "/portal/calendar.html";
+          // Calendar functionality disabled - show message
+          alert('Calendar functionality is temporarily disabled. Schedule viewing will be available in a future update.');
         };
 
         window.viewContractorProjects = (contractorId) => {
@@ -310,9 +308,8 @@ if (location.pathname.endsWith("/projects.html")) {
         };
 
         window.viewAllSchedules = () => {
-          // Navigate to calendar without filters
-          sessionStorage.removeItem('calendarFilter');
-          location.href = "/portal/calendar.html";
+          // Calendar functionality disabled - show message
+          alert('Calendar functionality is temporarily disabled. Schedule viewing will be available in a future update.');
         };
 
         window.generateInvoices = () => {
@@ -405,10 +402,8 @@ if (location.pathname.includes("/portal/") && !location.pathname.endsWith("/logi
 if (location.pathname.endsWith("/staff.html")) {
   // Staff management functions
   window.viewSchedule = (userId) => {
-    // Navigate to calendar with user filter
-    const user = getStaffMember(userId);
-    sessionStorage.setItem('calendarFilter', JSON.stringify({ userId, userName: user.name }));
-    location.href = "/portal/calendar.html";
+    // Calendar functionality disabled - show message
+    alert('Calendar functionality is temporarily disabled. Schedule viewing will be available in a future update.');
   };
 
   window.viewPayroll = (userId) => {
@@ -648,9 +643,8 @@ if (location.pathname.endsWith("/staff.html")) {
   };
 
   window.viewAllSchedules = () => {
-    // Navigate to calendar without filters
-    sessionStorage.removeItem('calendarFilter');
-    location.href = "/portal/calendar.html";
+    // Calendar functionality disabled - show message
+    alert('Calendar functionality is temporarily disabled. Schedule viewing will be available in a future update.');
   };
 
   window.generatePayroll = () => {

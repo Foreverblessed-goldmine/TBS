@@ -707,29 +707,8 @@ window.removeAssignment = (taskId, userId) => {
 };
 
 window.pushTaskToCalendar = async (taskId) => {
-  try {
-    const response = await fetch(`/api/tasks/calendar/tasks/${taskId}/push`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('tbs_at') || ''}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        all_day: true // Default to all-day event
-      })
-    });
-    
-    if (response.ok) {
-      alert('Task added to calendar successfully!');
-    } else {
-      const error = await response.json().catch(() => ({}));
-      alert(`Failed to add task to calendar: ${error.error || 'Unknown error'}`);
-    }
-  } catch (error) {
-    console.error('Error pushing task to calendar:', error);
-    alert('Error adding task to calendar. Please try again.');
-  }
+  // Calendar functionality disabled - show message
+  alert('Calendar functionality is temporarily disabled. Task scheduling will be available in a future update.');
 };
 
 export function openProjectDetails(projectId) {

@@ -5134,9 +5134,73 @@ main {
   .metrics-panel .metrics-row {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .actions-panel .quick-actions {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Calendar Placeholder Styles */
+.calendar-placeholder {
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  text-align: center;
+  color: #6c757d;
+}
+
+.calendar-placeholder-content {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.placeholder-message {
+  text-align: center;
+  max-width: 500px;
+  padding: 40px 20px;
+}
+
+.placeholder-message h3 {
+  color: #495057;
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+
+.placeholder-message p {
+  color: #6c757d;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.placeholder-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.placeholder-actions .btn {
+  min-width: 140px;
+}
+
+@media (max-width: 768px) {
+  .placeholder-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .placeholder-actions .btn {
+    width: 100%;
+    max-width: 200px;
   }
 }
 

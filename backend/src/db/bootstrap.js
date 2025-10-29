@@ -62,6 +62,7 @@ export async function ensureSchema() {
     // Note: SQLite has limited ALTER TABLE support, so we add columns without constraints
     // Foreign keys and ENUM constraints are enforced at application level for SQLite
     const columnsToCheck = [
+      { name: "title", sql: "ADD COLUMN title TEXT NOT NULL DEFAULT 'Untitled Task'" },
       { name: "description", sql: "ADD COLUMN description TEXT" },
       { name: "status", sql: "ADD COLUMN status TEXT DEFAULT 'todo'" },
       { name: "priority", sql: "ADD COLUMN priority TEXT DEFAULT 'medium'" },
@@ -71,6 +72,7 @@ export async function ensureSchema() {
       { name: "start_date", sql: "ADD COLUMN start_date DATETIME" },
       { name: "end_date", sql: "ADD COLUMN end_date DATETIME" },
       { name: "notes", sql: "ADD COLUMN notes TEXT" },
+      { name: "created_at", sql: "ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" },
       { name: "updated_at", sql: "ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" }
     ];
 
